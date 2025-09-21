@@ -877,7 +877,7 @@ export default function DashboardPage() {
                         placeholder="Event title"
                         value={newEvent.title}
                         onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -887,7 +887,7 @@ export default function DashboardPage() {
                           type="date"
                           value={newEvent.date}
                           onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-                          className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                          className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           required
                         />
                       </div>
@@ -895,7 +895,7 @@ export default function DashboardPage() {
                         <select
                           value={newEvent.type}
                           onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                          className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                          className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="admission">📚 Admission</option>
                           <option value="scholarship">💰 Scholarship</option>
@@ -943,7 +943,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingEvent.title}
                                 onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                               />
                             </div>
@@ -953,7 +953,7 @@ export default function DashboardPage() {
                                   type="date"
                                   value={editingEvent.date}
                                   onChange={(e) => setEditingEvent({ ...editingEvent, date: e.target.value })}
-                                  className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                  className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   required
                                 />
                               </div>
@@ -961,7 +961,7 @@ export default function DashboardPage() {
                                 <select
                                   value={editingEvent.type}
                                   onChange={(e) => setEditingEvent({ ...editingEvent, type: e.target.value })}
-                                  className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                  className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 >
                                   <option value="admission">📚 Admission</option>
                                   <option value="scholarship">💰 Scholarship</option>
@@ -1059,7 +1059,7 @@ export default function DashboardPage() {
                         placeholder="Course name (e.g., B.Sc., B.Tech)"
                         value={newCourse.course}
                         onChange={(e) => setNewCourse({ ...newCourse, course: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1069,7 +1069,7 @@ export default function DashboardPage() {
                         placeholder="Careers (comma-separated: Software Engineer, Data Scientist)"
                         value={newCourse.careers}
                         onChange={(e) => setNewCourse({ ...newCourse, careers: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1079,7 +1079,7 @@ export default function DashboardPage() {
                         placeholder="Higher studies (comma-separated: M.Sc., MBA)"
                         value={newCourse.higherStudies}
                         onChange={(e) => setNewCourse({ ...newCourse, higherStudies: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1124,7 +1124,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCourse.course}
                                 onChange={(e) => setEditingCourse({ ...editingCourse, course: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                               />
                             </div>
@@ -1133,7 +1133,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCourse.careers}
                                 onChange={(e) => setEditingCourse({ ...editingCourse, careers: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Careers (comma-separated)"
                                 required
                               />
@@ -1143,7 +1143,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCourse.higherStudies}
                                 onChange={(e) => setEditingCourse({ ...editingCourse, higherStudies: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Higher studies (comma-separated)"
                                 required
                               />
@@ -1242,7 +1242,7 @@ export default function DashboardPage() {
                         placeholder="College name (e.g., IIT Delhi, Delhi University)"
                         value={newCollege.name}
                         onChange={(e) => setNewCollege({ ...newCollege, name: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1252,7 +1252,7 @@ export default function DashboardPage() {
                         placeholder="Location (e.g., New Delhi, Delhi)"
                         value={newCollege.location}
                         onChange={(e) => setNewCollege({ ...newCollege, location: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1264,7 +1264,7 @@ export default function DashboardPage() {
                           placeholder="Latitude (e.g., 28.6139)"
                           value={newCollege.latitude}
                           onChange={(e) => setNewCollege({ ...newCollege, latitude: e.target.value })}
-                          className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                          className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           required
                         />
                       </div>
@@ -1275,7 +1275,7 @@ export default function DashboardPage() {
                           placeholder="Longitude (e.g., 77.2090)"
                           value={newCollege.longitude}
                           onChange={(e) => setNewCollege({ ...newCollege, longitude: e.target.value })}
-                          className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                          className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           required
                         />
                       </div>
@@ -1286,7 +1286,7 @@ export default function DashboardPage() {
                         placeholder="Courses (comma-separated: B.Tech, M.Tech, PhD)"
                         value={newCollege.courses}
                         onChange={(e) => setNewCollege({ ...newCollege, courses: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1296,7 +1296,7 @@ export default function DashboardPage() {
                         placeholder="Facilities (comma-separated: Hostel, Library, Labs, Sports)"
                         value={newCollege.facilities}
                         onChange={(e) => setNewCollege({ ...newCollege, facilities: e.target.value })}
-                        className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-gray-500"
+                        className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -1341,7 +1341,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCollege.name}
                                 onChange={(e) => setEditingCollege({ ...editingCollege, name: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                               />
                             </div>
@@ -1350,7 +1350,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCollege.location}
                                 onChange={(e) => setEditingCollege({ ...editingCollege, location: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                               />
                             </div>
@@ -1361,7 +1361,7 @@ export default function DashboardPage() {
                                   step="any"
                                   value={editingCollege.latitude}
                                   onChange={(e) => setEditingCollege({ ...editingCollege, latitude: e.target.value })}
-                                  className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                  className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   required
                                 />
                               </div>
@@ -1371,7 +1371,7 @@ export default function DashboardPage() {
                                   step="any"
                                   value={editingCollege.longitude}
                                   onChange={(e) => setEditingCollege({ ...editingCollege, longitude: e.target.value })}
-                                  className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                  className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   required
                                 />
                               </div>
@@ -1381,7 +1381,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCollege.courses}
                                 onChange={(e) => setEditingCollege({ ...editingCollege, courses: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Courses (comma-separated)"
                                 required
                               />
@@ -1391,7 +1391,7 @@ export default function DashboardPage() {
                                 type="text"
                                 value={editingCollege.facilities}
                                 onChange={(e) => setEditingCollege({ ...editingCollege, facilities: e.target.value })}
-                                className="w-full p-4 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl shadow-md focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                                className="w-full bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Facilities (comma-separated)"
                                 required
                               />
