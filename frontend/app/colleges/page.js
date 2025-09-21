@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Ruler, GraduationCap, University, Building2 } from 'lucide-react';
 
 export default function CollegesPage() {
   const [colleges, setColleges] = useState([]);
@@ -71,74 +73,145 @@ export default function CollegesPage() {
     setShowNearbyResult(false);
   };
 
-  const CollegeCard = ({ college }) => (
-    <div className="bg-white shadow rounded p-4 mb-4">
-      <h2 className="text-lg font-semibold mb-1">{college.name}</h2>
-      <p className="text-gray-600 mb-2">{college.location}</p>
+  const CollegeCard = ({ college, index }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-transparent hover:border-indigo-500"
+    >
+      <div className="flex items-start mb-4">
+        <GraduationCap className="w-8 h-8 text-indigo-600 mr-3 mt-1 flex-shrink-0" />
+        <div className="flex-1">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{college.name}</h2>
+          <div className="flex items-center text-gray-600 mb-4">
+            <MapPin className="w-4 h-4 mr-1" />
+            <span className="text-sm">{college.location}</span>
+          </div>
+        </div>
+      </div>
 
-      <div className="mb-2">
-        <span className="font-medium text-gray-700">Courses: </span>
-        <span className="text-sm">{college.courses.join(', ')}</span>
+      <div className="mb-4">
+        <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+          <span className="text-blue-600 mr-1">📚</span>
+          Courses:
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {college.courses.map((course, index) => (
+            <span
+              key={index}
+              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium"
+            >
+              {course}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div>
-        <span className="font-medium text-gray-700">Facilities: </span>
-        <span className="text-sm">{college.facilities.join(', ')}</span>
+        <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+          <span className="text-green-600 mr-1">🏢</span>
+          Facilities:
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {college.facilities.map((facility, index) => (
+            <span
+              key={index}
+              className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium"
+            >
+              {facility}
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-lg">Loading colleges...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-lg font-medium text-gray-700">Loading colleges...</div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
-          Government Colleges Directory
-        </h1>
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Government Colleges Directory
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Discover government colleges near you and explore their offerings
+          </p>
+        </motion.div>
 
-        <div className="bg-white shadow rounded p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Find Nearby Colleges</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white shadow-lg rounded-xl p-6 mb-8"
+        >
+          <h2 className="text-xl font-semibold mb-6 flex items-center text-black">
+            <MapPin className="w-6 h-6 mr-2 text-indigo-900" />
+            Find Nearby Colleges
+          </h2>
 
-          <form onSubmit={handleNearbySearch} className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              <input
-                type="number"
-                step="any"
-                placeholder="Latitude"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
-                className="border p-2 rounded mr-2 flex-1 min-w-32"
-              />
-              <input
-                type="number"
-                step="any"
-                placeholder="Longitude"
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
-                className="border p-2 rounded mr-2 flex-1 min-w-32"
-              />
-              <input
-                type="number"
-                placeholder="Radius (km)"
-                value={radius}
-                onChange={(e) => setRadius(e.target.value)}
-                className="border p-2 rounded mr-2 flex-1 min-w-32"
-              />
+          <form onSubmit={handleNearbySearch} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="number"
+                  step="any"
+                  placeholder="Latitude"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                  className="bg-white shadow-md rounded-lg pl-10 pr-4 py-3 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="number"
+                  step="any"
+                  placeholder="Longitude"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
+                  className="bg-white shadow-md rounded-lg pl-10 pr-4 py-3 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full text-gray-900 placeholder-gray-500"
+                />
+              </div>
+              <div className="relative">
+                <Ruler className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="number"
+                  placeholder="Radius (km)"
+                  value={radius}
+                  onChange={(e) => setRadius(e.target.value)}
+                  className="bg-white shadow-md rounded-lg pl-10 pr-4 py-3 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full text-gray-900 placeholder-gray-500"
+                />
+              </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <button
                 type="submit"
                 disabled={isSearching}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-indigo-600 hover:to-purple-700 disabled:opacity-50 font-medium transition flex items-center gap-2"
               >
+                <MapPin className="w-5 h-5" />
                 {isSearching ? 'Searching...' : 'Find Nearby'}
               </button>
 
@@ -146,47 +219,67 @@ export default function CollegesPage() {
                 <button
                   type="button"
                   onClick={clearNearbySearch}
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 font-medium transition"
                 >
                   Clear Search
                 </button>
               )}
             </div>
           </form>
-        </div>
+        </motion.div>
 
         {error && (
-          <div className="text-center text-red-600 text-sm mb-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-3 mb-6 text-center max-w-2xl mx-auto"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {showNearbyResult ? (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900 flex items-center">
+              <MapPin className="w-6 h-6 mr-2 text-indigo-600" />
               Nearby Colleges (within {radius}km):
             </h2>
             {nearbyColleges && nearbyColleges.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-                {nearbyColleges.map((college) => (
-                  <CollegeCard key={college.id} college={college} />
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {nearbyColleges.map((college, index) => (
+                  <CollegeCard key={college.id} college={college} index={index} />
                 ))}
               </div>
             ) : (
-              <div className="bg-white shadow rounded p-4 mb-4 text-center text-gray-600">
-                No colleges found nearby within {radius}km radius.
+              <div className="bg-white shadow-lg rounded-xl p-8 text-center border border-gray-200">
+                <University className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No colleges found nearby</h3>
+                <p className="text-gray-600">
+                  Try expanding your search radius to find more colleges in your area.
+                </p>
               </div>
             )}
-          </div>
+          </motion.div>
         ) : (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">All Colleges:</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-              {colleges.map((college) => (
-                <CollegeCard key={college.id} college={college} />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900 flex items-center">
+              <Building2 className="w-6 h-6 mr-2 text-indigo-600" />
+              All Colleges:
+            </h2>
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {colleges.map((college, index) => (
+                <CollegeCard key={college.id} college={college} index={index} />
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

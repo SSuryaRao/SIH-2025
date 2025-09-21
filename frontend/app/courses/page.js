@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Search, GraduationCap, BookOpen } from 'lucide-react';
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
@@ -64,99 +66,171 @@ export default function CoursesPage() {
     setShowSearchResult(false);
   };
 
-  const CourseCard = ({ course }) => (
-    <div className="bg-white shadow rounded p-4 mb-4">
-      <h2 className="text-xl font-semibold mb-2">{course.course}</h2>
+  const CourseCard = ({ course, index }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-transparent hover:border-indigo-500"
+    >
+      <div className="flex items-center mb-4">
+        <GraduationCap className="w-8 h-8 text-indigo-600 mr-3" />
+        <h2 className="text-xl font-semibold text-gray-900">{course.course}</h2>
+      </div>
 
-      <div className="mb-3">
-        <h3 className="font-medium text-gray-700 mb-1">Careers:</h3>
-        <ul className="list-disc ml-5 text-sm">
+      <div className="mb-4">
+        <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+          <span className="text-blue-600 mr-1">💼</span>
+          Careers:
+        </h3>
+        <div className="flex flex-wrap gap-2">
           {course.careers.map((career, index) => (
-            <li key={index}>{career}</li>
+            <span
+              key={index}
+              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium"
+            >
+              {career}
+            </span>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div>
-        <h3 className="font-medium text-gray-700 mb-1">Higher Studies:</h3>
-        <ul className="list-disc ml-5 text-sm">
+        <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+          <span className="text-green-600 mr-1">📚</span>
+          Higher Studies:
+        </h3>
+        <div className="space-y-1">
           {course.higherStudies.map((study, index) => (
-            <li key={index}>{study}</li>
+            <p key={index} className="text-green-700 italic text-sm">
+              • {study}
+            </p>
           ))}
-        </ul>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-lg">Loading courses...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-lg font-medium text-gray-700">Loading courses...</div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
-          Course to Career Mapping
-        </h1>
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-indigo-50 py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Course to Career Mapping
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Discover career paths and higher education opportunities for your chosen course
+          </p>
+        </motion.div>
 
-        <form onSubmit={handleSearch} className="mb-6">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search for a course (e.g., bsc, bcom, btech)"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border p-2 rounded w-full"
-            />
-            <button
-              type="submit"
-              disabled={isSearching}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-              {isSearching ? 'Searching...' : 'Search'}
-            </button>
-            {showSearchResult && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              >
-                Clear
-              </button>
-            )}
+        <motion.form
+          onSubmit={handleSearch}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="relative max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search for a course (e.g., B.Sc., B.Tech)"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-white shadow-md rounded-lg px-12 py-3 border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full text-gray-900 placeholder-gray-500"
+              />
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-2">
+                <button
+                  type="submit"
+                  disabled={isSearching}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium transition"
+                >
+                  {isSearching ? 'Searching...' : 'Search'}
+                </button>
+                {showSearchResult && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 font-medium transition"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-        </form>
+        </motion.form>
 
         {error && (
-          <div className="text-center text-red-600 text-sm mb-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-3 mb-6 text-center max-w-2xl mx-auto"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {showSearchResult ? (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Search Results:</h2>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900 flex items-center">
+              <Search className="w-6 h-6 mr-2 text-indigo-600" />
+              Search Results:
+            </h2>
             {searchResult ? (
-              <CourseCard course={searchResult} />
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <CourseCard course={searchResult} index={0} />
+              </div>
             ) : (
-              <div className="bg-white shadow rounded p-4 mb-4 text-center text-gray-600">
-                No course found for "{searchTerm}"
+              <div className="bg-white shadow-lg rounded-xl p-8 text-center border border-gray-200">
+                <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
+                <p className="text-gray-600">
+                  No course found for "{searchTerm}". Try another search term.
+                </p>
               </div>
             )}
-          </div>
+          </motion.div>
         ) : (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">All Courses:</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900 flex items-center">
+              <GraduationCap className="w-6 h-6 mr-2 text-indigo-600" />
+              All Courses:
+            </h2>
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {courses.map((course, index) => (
-                <CourseCard key={index} course={course} />
+                <CourseCard key={index} course={course} index={index} />
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

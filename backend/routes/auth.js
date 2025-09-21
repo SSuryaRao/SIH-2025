@@ -81,17 +81,69 @@ router.get('/profile', async (req, res) => {
     const user = userDoc.data();
     const userProfile = {
       username: user.username,
-      role: user.role || 'student'
+      role: user.role || 'student',
+      classLevel: user.classLevel || '12'
     };
 
     if (user.quizResult) {
       userProfile.quizResult = user.quizResult;
     }
 
+    if (user.profile) {
+      userProfile.profile = user.profile;
+    }
+
     res.json(userProfile);
   } catch (error) {
     console.error('Profile error:', error);
     return res.status(401).json({ error: 'Unauthorized' });
+  }
+});
+
+// PATCH /api/auth/profile - Update user profile
+router.patch('/profile', async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const token = authHeader.substring(7);
+
+  try {
+    const decoded = jwt.verify(token, 'secretkey');
+    const { classLevel } = req.body;
+
+    // Validate classLevel
+    if (classLevel && !['10', '12', 'UG', 'PG'].includes(classLevel)) {
+      return res.status(400).json({ error: 'Invalid class level' });
+    }
+
+    // Fetch user from Firestore to ensure user exists
+    const userDoc = await db.collection('users').doc(decoded.username).get();
+    if (!userDoc.exists) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Prepare update data
+    const updateData = {};
+    if (classLevel) {
+      updateData.classLevel = classLevel;
+    }
+
+    // Update user document in Firestore
+    await db.collection('users').doc(decoded.username).update(updateData);
+
+    res.json({
+      message: 'Profile updated successfully',
+      updatedFields: updateData
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

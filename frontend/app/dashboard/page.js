@@ -24,12 +24,16 @@ import {
   Edit,
   Trash2,
   Save,
-  X
+  X,
+  UserCircle
 } from 'lucide-react';
 
 export default function DashboardPage() {
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [error, setError] = useState('');
   const [timelineEvents, setTimelineEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'admission' });
@@ -46,8 +50,37 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    checkAuthentication();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    checkAuthentication();
+    fetchProfile();
+  }, [mounted]);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('http://localhost:4000/api/auth/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProfile(data);
+      }
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (user?.role === 'admin') {
@@ -373,7 +406,8 @@ export default function DashboardPage() {
     router.push('/login');
   };
 
-  if (isLoading) {
+  // Prevent hydration mismatch
+  if (!mounted || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-lg">Loading dashboard...</div>
@@ -453,30 +487,62 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto p-6 -mt-4 relative z-10">
-        {/* Profile Info Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <User className="w-6 h-6 text-blue-600" />
-            <h1 className="text-xl text-gray-900 font-semibold">Profile</h1>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Hello, {user?.username} 👋
-              </h2>
-              <p className="text-gray-700">Welcome to your personalized dashboard</p>
+        {/* Profile Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8"
+        >
+          <div className="flex items-center space-x-4">
+            {/* Avatar */}
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+              <UserCircle className="w-10 h-10 text-white" />
             </div>
-            <div>
-              <span className={`px-2 py-0.5 rounded-full text-sm font-medium ${
-                user?.role === 'admin'
-                  ? 'bg-red-200 text-red-900'
-                  : 'bg-blue-200 text-blue-900'
-              }`}>
-                {user?.role === 'admin' ? 'Admin' : 'Student'}
-              </span>
+
+            {/* Profile Info */}
+            <div className="flex-1">
+              {profileLoading ? (
+                <div className="animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded w-32 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-24"></div>
+                </div>
+              ) : profile ? (
+                <>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {profile.username}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      profile.classLevel === '10' || profile.classLevel === '12'
+                        ? 'bg-blue-100 text-blue-800'
+                        : profile.classLevel === 'UG'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-purple-100 text-purple-800'
+                    }`}>
+                      {profile.classLevel === '10' && 'Class 10 Student'}
+                      {profile.classLevel === '12' && 'Class 12 Student'}
+                      {profile.classLevel === 'UG' && 'Undergraduate Student'}
+                      {profile.classLevel === 'PG' && 'Postgraduate Student'}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="text-gray-500">
+                  <p className="text-lg font-medium">Profile not available</p>
+                </div>
+              )}
             </div>
+
+            {/* Edit Profile Link */}
+            <Link
+              href="/profile"
+              className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors duration-200 font-medium"
+            >
+              Edit Profile
+            </Link>
           </div>
-        </div>
+        </motion.div>
 
         {/* Quiz Results Section */}
         <motion.div
@@ -517,10 +583,44 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Score Breakdown:</h3>
-                {Object.entries(user.quizResult.scores).map(([stream, score], index) => {
-                  const maxScore = Math.max(...Object.values(user.quizResult.scores));
-                  const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Stream Compatibility:</h3>
+                {user.quizResult.finalScores ?
+                  Object.entries(user.quizResult.finalScores).map(([stream, score], index) => {
+                    const maxScore = Math.max(...Object.values(user.quizResult.finalScores));
+                    const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+
+                    return (
+                      <motion.div
+                        key={stream}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                        className="space-y-3"
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-800 font-semibold capitalize text-lg">{stream}</span>
+                          <span className="text-lg text-gray-900 font-bold bg-gray-100 px-3 py-1 rounded-lg">{Math.round(percentage)}%</span>
+                        </div>
+                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${percentage}%` }}
+                            transition={{ duration: 1, delay: 0.7 + index * 0.1, ease: "easeOut" }}
+                            className={`h-3 rounded-full relative ${
+                              stream === 'science' ? 'bg-gradient-to-r from-blue-500 to-blue-600' :
+                              stream === 'arts' ? 'bg-gradient-to-r from-purple-500 to-purple-600' :
+                              stream === 'commerce' ? 'bg-gradient-to-r from-green-500 to-green-600' :
+                              'bg-gradient-to-r from-orange-500 to-orange-600'
+                            }`}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  }) :
+                  // Fallback to old scores format
+                  Object.entries(user.quizResult.scores).map(([stream, score], index) => {
+                    const maxScore = Math.max(...Object.values(user.quizResult.scores));
+                    const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
                   return (
                     <motion.div
                       key={stream}
@@ -551,6 +651,55 @@ export default function DashboardPage() {
                     </motion.div>
                   );
                 })}
+
+                {/* Aptitude and Personality Scores */}
+                {user.quizResult.aptitudeScores && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      Aptitude Performance ({Math.round(user.quizResult.aptitudePercentage || 0)}%)
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {Object.entries(user.quizResult.aptitudeScores).map(([type, score]) => (
+                        <motion.div
+                          key={type}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="bg-indigo-50 rounded-lg p-4"
+                        >
+                          <div className="text-sm font-medium text-indigo-800 capitalize">{type}</div>
+                          <div className="text-xl font-bold text-indigo-900">{score}/2</div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {user.quizResult.personalityScores && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Personality Traits</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {Object.entries(user.quizResult.personalityScores).map(([trait, score]) => (
+                        <motion.div
+                          key={trait}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="bg-purple-50 rounded-lg p-4"
+                        >
+                          <div className="text-sm font-medium text-purple-800 capitalize">{trait}</div>
+                          <div className="text-xl font-bold text-purple-900">{score}/5</div>
+                          <div className="w-full bg-purple-200 rounded-full h-2 mt-2">
+                            <div
+                              className="bg-purple-600 h-2 rounded-full"
+                              style={{ width: `${(score / 5) * 100}%` }}
+                            ></div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           ) : (
