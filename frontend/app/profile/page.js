@@ -42,7 +42,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const response = await fetch("http://localhost:4000/api/auth/profile", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const response = await fetch("http://localhost:4000/api/auth/profile", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/profile`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -15,7 +15,8 @@ export default function TimelinePage() {
 
   const fetchTimeline = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/timeline');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const response = await fetch(apiUrl + '/api/timeline');
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
@@ -40,7 +41,7 @@ export default function TimelinePage() {
     const month = months[date.getMonth()];
     const year = date.getFullYear();
 
-    return `${day} ${month} ${year}`;
+    return day + ' ' + month + ' ' + year;
   };
 
   const getEventConfig = (type) => {
@@ -82,10 +83,10 @@ export default function TimelinePage() {
       'VERSION:2.0',
       'PRODID:-//Digital Guidance Platform//Timeline Event//EN',
       'BEGIN:VEVENT',
-      `DTSTART:${formatCalendarDate(startDate)}`,
-      `DTEND:${formatCalendarDate(endDate)}`,
-      `SUMMARY:${event.title}`,
-      `DESCRIPTION:${event.type} event`,
+      'DTSTART:' + formatCalendarDate(startDate),
+      'DTEND:' + formatCalendarDate(endDate),
+      'SUMMARY:' + event.title,
+      'DESCRIPTION:' + event.type + ' event',
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\n');
@@ -94,7 +95,7 @@ export default function TimelinePage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${event.title.replace(/\s+/g, '_')}.ics`;
+    link.download = event.title.replace(/\s+/g, '_') + '.ics';
     link.click();
     URL.revokeObjectURL(url);
   };

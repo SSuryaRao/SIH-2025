@@ -19,7 +19,8 @@ export default function CoursesPage() {
 
   const fetchAllCourses = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/courses');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const response = await fetch(apiUrl + '/api/courses');
       if (response.ok) {
         const data = await response.json();
         setCourses(data);
@@ -44,7 +45,8 @@ export default function CoursesPage() {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/courses/${searchTerm.trim()}`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const response = await fetch(apiUrl + '/api/courses/' + searchTerm.trim());
       if (response.ok) {
         const data = await response.json();
         setSearchResult(data);

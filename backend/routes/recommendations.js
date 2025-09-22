@@ -15,7 +15,7 @@ function requireAuth(req, res, next) {
   const token = authHeader.substring(7);
 
   try {
-    const decoded = jwt.verify(token, 'secretkey');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
     req.user = decoded;
     next();
   } catch (error) {
@@ -35,6 +35,33 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
   return R * c; // Distance in kilometers
 }
 
+// GET /api/recommendations/debug - Debug endpoint to check user data
+router.get('/debug', requireAuth, async (req, res) => {
+  try {
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.where('username', '==', req.user.username).get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data();
+
+    // Return debug information
+    return res.json({
+      username: req.user.username,
+      hasQuizResult: !!userData.quizResult,
+      recommendedStream: userData.quizResult?.recommendedStream || null,
+      classLevel: userData.classLevel || null,
+      fullQuizResult: userData.quizResult || null
+    });
+  } catch (error) {
+    console.error('Debug error:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+});
+
 // GET /api/recommendations - Get personalized recommendations
 router.get('/', requireAuth, async (req, res) => {
   try {
@@ -48,6 +75,13 @@ router.get('/', requireAuth, async (req, res) => {
 
     const userDoc = snapshot.docs[0];
     const userData = userDoc.data();
+
+    console.log('User data for recommendations:', {
+      username: req.user.username,
+      hasQuizResult: !!userData.quizResult,
+      recommendedStream: userData.quizResult?.recommendedStream,
+      classLevel: userData.classLevel
+    });
 
     // Check if user has taken the quiz
     if (!userData.quizResult || !userData.quizResult.recommendedStream) {
@@ -297,15 +331,28 @@ router.get('/', requireAuth, async (req, res) => {
       const userLng = parseFloat(userData.profile.lng);
 
       recommendedColleges = recommendedColleges.map(college => {
+        let collegeLat, collegeLng;
+
+        // Handle different location data structures
         if (college.location && college.location.lat && college.location.lng) {
-          const distance = calculateDistance(
-            userLat, userLng,
-            parseFloat(college.location.lat),
-            parseFloat(college.location.lng)
-          );
-          return { ...college, distance };
+          // Nested location object
+          collegeLat = parseFloat(college.location.lat);
+          collegeLng = parseFloat(college.location.lng);
+        } else if (college.latitude && college.longitude) {
+          // Direct latitude/longitude properties
+          collegeLat = parseFloat(college.latitude);
+          collegeLng = parseFloat(college.longitude);
+        } else if (college.lat && college.lng) {
+          // Direct lat/lng properties
+          collegeLat = parseFloat(college.lat);
+          collegeLng = parseFloat(college.lng);
+        } else {
+          // No valid location data
+          return { ...college, distance: Infinity };
         }
-        return { ...college, distance: Infinity };
+
+        const distance = calculateDistance(userLat, userLng, collegeLat, collegeLng);
+        return { ...college, distance };
       }).sort((a, b) => a.distance - b.distance);
     }
 

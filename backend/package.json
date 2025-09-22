@@ -6,10 +6,17 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seedFirestore.js",
+    "build": "echo 'No build required for Node.js'",
+    "test": "echo 'Tests not implemented yet'"
   },
-  "keywords": [],
-  "author": "",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": ["nodejs", "express", "firebase", "api"],
+  "author": "SIH 2025 Team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

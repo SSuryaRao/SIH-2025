@@ -103,10 +103,10 @@ const questions = {
       type: "logical",
       text: "What comes next in the sequence: 2, 6, 18, 54, ?",
       options: [
-        { value: "correct", label: "162" },
-        { value: "wrong", label: "108" },
-        { value: "wrong", label: "216" },
-        { value: "wrong", label: "144" },
+        { value: "162", label: "162", correct: true },
+        { value: "108", label: "108", correct: false },
+        { value: "216", label: "216", correct: false },
+        { value: "144", label: "144", correct: false },
       ],
     },
     {
@@ -115,10 +115,10 @@ const questions = {
       type: "numerical",
       text: "If 40% of a number is 80, what is 25% of that number?",
       options: [
-        { value: "correct", label: "50" },
-        { value: "wrong", label: "40" },
-        { value: "wrong", label: "60" },
-        { value: "wrong", label: "45" },
+        { value: "50", label: "50", correct: true },
+        { value: "40", label: "40", correct: false },
+        { value: "60", label: "60", correct: false },
+        { value: "45", label: "45", correct: false },
       ],
     },
     {
@@ -127,10 +127,10 @@ const questions = {
       type: "verbal",
       text: "Choose the word that best completes: 'Book is to Library as Painting is to ___'",
       options: [
-        { value: "correct", label: "Gallery" },
-        { value: "wrong", label: "Frame" },
-        { value: "wrong", label: "Artist" },
-        { value: "wrong", label: "Canvas" },
+        { value: "Gallery", label: "Gallery", correct: true },
+        { value: "Frame", label: "Frame", correct: false },
+        { value: "Artist", label: "Artist", correct: false },
+        { value: "Canvas", label: "Canvas", correct: false },
       ],
     },
     {
@@ -139,10 +139,10 @@ const questions = {
       type: "spatial",
       text: "If you rotate a square 45 degrees clockwise, which shape describes the result?",
       options: [
-        { value: "correct", label: "Diamond/rhombus orientation" },
-        { value: "wrong", label: "Rectangle" },
-        { value: "wrong", label: "Triangle" },
-        { value: "wrong", label: "Circle" },
+        { value: "Diamond/rhombus orientation", label: "Diamond/rhombus orientation", correct: true },
+        { value: "Rectangle", label: "Rectangle", correct: false },
+        { value: "Triangle", label: "Triangle", correct: false },
+        { value: "Circle", label: "Circle", correct: false },
       ],
     },
     {
@@ -151,10 +151,10 @@ const questions = {
       type: "logical",
       text: "All roses are flowers. Some flowers are red. Therefore:",
       options: [
-        { value: "correct", label: "Some roses may be red" },
-        { value: "wrong", label: "All roses are red" },
-        { value: "wrong", label: "No roses are red" },
-        { value: "wrong", label: "All red things are roses" },
+        { value: "Some roses may be red", label: "Some roses may be red", correct: true },
+        { value: "All roses are red", label: "All roses are red", correct: false },
+        { value: "No roses are red", label: "No roses are red", correct: false },
+        { value: "All red things are roses", label: "All red things are roses", correct: false },
       ],
     },
     {
@@ -163,10 +163,10 @@ const questions = {
       type: "numerical",
       text: "A train travels 120 km in 2 hours. At this rate, how far will it travel in 5 hours?",
       options: [
-        { value: "correct", label: "300 km" },
-        { value: "wrong", label: "240 km" },
-        { value: "wrong", label: "360 km" },
-        { value: "wrong", label: "250 km" },
+        { value: "300 km", label: "300 km", correct: true },
+        { value: "240 km", label: "240 km", correct: false },
+        { value: "360 km", label: "360 km", correct: false },
+        { value: "250 km", label: "250 km", correct: false },
       ],
     },
     {
@@ -175,10 +175,10 @@ const questions = {
       type: "verbal",
       text: "Which word is the antonym of 'Abundant'?",
       options: [
-        { value: "correct", label: "Scarce" },
-        { value: "wrong", label: "Plentiful" },
-        { value: "wrong", label: "Rich" },
-        { value: "wrong", label: "Multiple" },
+        { value: "Scarce", label: "Scarce", correct: true },
+        { value: "Plentiful", label: "Plentiful", correct: false },
+        { value: "Rich", label: "Rich", correct: false },
+        { value: "Multiple", label: "Multiple", correct: false },
       ],
     },
     {
@@ -187,10 +187,10 @@ const questions = {
       type: "spatial",
       text: "How many cubes are there in a 3x3x3 cube structure?",
       options: [
-        { value: "correct", label: "27" },
-        { value: "wrong", label: "18" },
-        { value: "wrong", label: "24" },
-        { value: "wrong", label: "21" },
+        { value: "27", label: "27", correct: true },
+        { value: "18", label: "18", correct: false },
+        { value: "24", label: "24", correct: false },
+        { value: "21", label: "21", correct: false },
       ],
     },
   ],
@@ -309,7 +309,7 @@ router.post("/submit", async (req, res) => {
       if (question.type && aptitudeScores.hasOwnProperty(question.type)) {
         // For aptitude questions, check if answer is correct
         const selectedOption = question.options.find(opt => opt.value === answer);
-        if (selectedOption && selectedOption.value === "correct") {
+        if (selectedOption && selectedOption.correct === true) {
           aptitudeScores[question.type]++;
         }
       }
@@ -347,12 +347,19 @@ router.post("/submit", async (req, res) => {
     vocational: aptitudePercentage * 0.4,
   };
 
-  // Calculate personality influence on streams
+  // Normalize personality scores (max possible per trait is 5, we want percentage)
+  const maxPersonalityScore = 5;
+  const normalizedPersonalityScores = {};
+  Object.keys(personalityScores).forEach(trait => {
+    normalizedPersonalityScores[trait] = (personalityScores[trait] / maxPersonalityScore) * 100;
+  });
+
+  // Calculate personality influence on streams using normalized scores
   const personalityStreamBonus = {
-    science: (personalityScores.analytical + personalityScores.practical) * 2,
-    arts: (personalityScores.creative + personalityScores.analytical) * 2,
-    commerce: (personalityScores.leader + personalityScores.analytical) * 2,
-    vocational: (personalityScores.practical + personalityScores.leader) * 2,
+    science: (normalizedPersonalityScores.analytical + normalizedPersonalityScores.practical) * 0.5,
+    arts: (normalizedPersonalityScores.creative + normalizedPersonalityScores.analytical) * 0.5,
+    commerce: (normalizedPersonalityScores.leader + normalizedPersonalityScores.analytical) * 0.5,
+    vocational: (normalizedPersonalityScores.practical + normalizedPersonalityScores.leader) * 0.5,
   };
 
   // Calculate final weighted scores
@@ -400,6 +407,7 @@ router.post("/submit", async (req, res) => {
       personality: {
         weight: 20,
         scores: personalityScores,
+        normalizedScores: normalizedPersonalityScores,
         totalQuestions: totalPersonalityQuestions
       }
     }
@@ -411,15 +419,26 @@ router.post("/submit", async (req, res) => {
     const token = authHeader.substring(7);
 
     try {
-      const decoded = jwt.verify(token, "secretkey");
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretkey");
+
+      console.log("Saving quiz result for user:", decoded.username);
+      console.log("Quiz result being saved:", {
+        recommendedStream: result.recommendedStream,
+        hasScores: !!result.scores,
+        hasFinalScores: !!result.finalScores
+      });
 
       await db.collection("users").doc(decoded.username).update({
         quizResult: result,
       });
+
+      console.log("Quiz result saved successfully for user:", decoded.username);
     } catch (error) {
       console.error("Quiz result save error:", error);
       // don't block response on error
     }
+  } else {
+    console.log("No authentication token provided - quiz result not saved");
   }
 
   res.json(result);

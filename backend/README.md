@@ -1,9 +1,32 @@
-# Digital Guidance Platform Backend
+# 🎯 SIH 2025 Backend - Digital Career Guidance Platform
+
+Node.js + Express + Firebase backend API for the Digital Guidance Platform.
+
+## 🚀 Quick Start
+
+### Development
+```bash
+npm install
+npm run dev
+```
+
+### Environment Variables
+For development, use firebase-service-account.json file.
+For production (Render), set these environment variables:
+```env
+NODE_ENV=production
+PORT=10000
+JWT_SECRET=your-super-secret-jwt-key-here
+FIREBASE_PROJECT_ID=your-firebase-project-id
+FIREBASE_CLIENT_EMAIL=your-firebase-client-email
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----\n"
+FRONTEND_URL=https://your-app.vercel.app
+```
 
 ## Setup and Run Instructions
 
 ### Prerequisites
-- Node.js (v16 or v18+)
+- Node.js (v18+)
 - Firebase project with Firestore enabled
 
 ### Firebase Setup

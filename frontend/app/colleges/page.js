@@ -21,7 +21,8 @@ export default function CollegesPage() {
 
   const fetchAllColleges = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/colleges');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const response = await fetch(apiUrl + '/api/colleges');
       if (response.ok) {
         const data = await response.json();
         setColleges(data);
@@ -47,8 +48,9 @@ export default function CollegesPage() {
     setError('');
 
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
       const response = await fetch(
-        `http://localhost:4000/api/colleges/nearby?lat=${latitude}&lng=${longitude}&radius=${radius}`
+        apiUrl + '/api/colleges/nearby?lat=' + latitude + '&lng=' + longitude + '&radius=' + radius
       );
 
       if (response.ok) {

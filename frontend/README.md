@@ -1,10 +1,29 @@
-# Digital Guidance Platform Frontend
+# 🎯 SIH 2025 Frontend - Digital Career Guidance Platform
 
 This is a Next.js 14 application for the Digital Guidance Platform frontend.
 
+## 🚀 Quick Start
+
+### Development
+```bash
+npm install
+npm run dev
+```
+
+### Environment Variables
+Create `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
+
+For production (Vercel):
+```env
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
+```
+
 ## Prerequisites
 
-- Backend must be running on port 4000
+- Backend must be running on configured API URL
 - Node.js and npm installed
 
 ## Setup and Run Instructions

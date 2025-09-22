@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { username: user.username, role: user.role || 'student' },
-      'secretkey',
+      process.env.JWT_SECRET || 'secretkey',
       { expiresIn: '1h' }
     );
 
@@ -70,7 +70,7 @@ router.get('/profile', async (req, res) => {
   const token = authHeader.substring(7);
 
   try {
-    const decoded = jwt.verify(token, 'secretkey');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
 
     // Fetch user from Firestore
     const userDoc = await db.collection('users').doc(decoded.username).get();
@@ -111,8 +111,8 @@ router.patch('/profile', async (req, res) => {
   const token = authHeader.substring(7);
 
   try {
-    const decoded = jwt.verify(token, 'secretkey');
-    const { classLevel } = req.body;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
+    const { classLevel, quizResult } = req.body;
 
     // Validate classLevel
     if (classLevel && !['10', '12', 'UG', 'PG'].includes(classLevel)) {
@@ -129,6 +129,9 @@ router.patch('/profile', async (req, res) => {
     const updateData = {};
     if (classLevel) {
       updateData.classLevel = classLevel;
+    }
+    if (quizResult) {
+      updateData.quizResult = quizResult;
     }
 
     // Update user document in Firestore

@@ -62,9 +62,13 @@ export default function DashboardPage() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        setError('Authentication required. Please log in again.');
+        router.push('/login');
+        return;
+      }
 
-      const response = await fetch('http://localhost:4000/api/auth/profile', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -74,9 +78,17 @@ export default function DashboardPage() {
       if (response.ok) {
         const data = await response.json();
         setProfile(data);
+        setError(''); // Clear any previous errors
+      } else if (response.status === 401) {
+        setError('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        router.push('/login');
+      } else {
+        setError('Failed to load profile data. Please try again.');
       }
     } catch (err) {
       console.error('Error fetching profile:', err);
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setProfileLoading(false);
     }
@@ -102,7 +114,7 @@ export default function DashboardPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/profile', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -126,7 +138,7 @@ export default function DashboardPage() {
 
   const fetchTimelineEvents = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/timeline');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/timeline`);
       if (response.ok) {
         const events = await response.json();
         setTimelineEvents(events);
@@ -138,7 +150,7 @@ export default function DashboardPage() {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/courses');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/courses`);
       if (response.ok) {
         const coursesData = await response.json();
         setCourses(coursesData);
@@ -150,7 +162,7 @@ export default function DashboardPage() {
 
   const fetchColleges = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/colleges');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/colleges`);
       if (response.ok) {
         const collegesData = await response.json();
         setColleges(collegesData);
@@ -164,17 +176,32 @@ export default function DashboardPage() {
     setRecommendationsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/recommendations', {
+      if (!token) {
+        setError('Authentication required for recommendations.');
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/recommendations`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
+
       if (response.ok) {
         const recommendationsData = await response.json();
         setRecommendations(recommendationsData);
+      } else if (response.status === 401) {
+        setError('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        router.push('/login');
+      } else if (response.status === 404) {
+        setError('Recommendations not found. Please complete your profile and take the quiz.');
+      } else {
+        setError('Failed to load recommendations. Please try again.');
       }
     } catch (err) {
       console.error('Error fetching recommendations:', err);
+      setError('Network error while loading recommendations. Please check your connection.');
     } finally {
       setRecommendationsLoading(false);
     }
@@ -185,7 +212,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch('http://localhost:4000/api/admin/timeline', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/timeline`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -208,7 +235,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/timeline/${editingEvent.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/timeline/${editingEvent.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -234,7 +261,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/timeline/${eventId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/timeline/${eventId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -254,7 +281,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch('http://localhost:4000/api/admin/courses', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/courses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -281,7 +308,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/courses/${editingCourse.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/courses/${editingCourse.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -307,7 +334,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/courses/${courseId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/courses/${courseId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -327,7 +354,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch('http://localhost:4000/api/admin/colleges', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/colleges`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -357,7 +384,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/colleges/${editingCollege.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/colleges/${editingCollege.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -386,7 +413,7 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/colleges/${collegeId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/colleges/${collegeId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -558,7 +585,7 @@ export default function DashboardPage() {
             <h2 className="text-2xl text-gray-900 font-bold">Quiz Results</h2>
           </div>
 
-          {user?.quizResult ? (
+          {user?.quizResult?.recommendedStream ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -618,7 +645,7 @@ export default function DashboardPage() {
                     );
                   }) :
                   // Fallback to old scores format
-                  Object.entries(user.quizResult.scores).map(([stream, score], index) => {
+                  user.quizResult.scores ? Object.entries(user.quizResult.scores).map(([stream, score], index) => {
                     const maxScore = Math.max(...Object.values(user.quizResult.scores));
                     const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
                   return (
@@ -650,7 +677,7 @@ export default function DashboardPage() {
                       </div>
                     </motion.div>
                   );
-                })}
+                }) : <p className="text-gray-500">No quiz scores available</p>}
 
                 {/* Aptitude and Personality Scores */}
                 {user.quizResult.aptitudeScores && (

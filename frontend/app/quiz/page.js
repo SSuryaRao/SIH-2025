@@ -230,7 +230,7 @@ export default function QuizPage() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/quiz/questions');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/quiz/questions`);
       if (response.ok) {
         const data = await response.json();
         const allQuestions = [
@@ -314,6 +314,15 @@ export default function QuizPage() {
   };
 
   const handleStreamSubmit = async () => {
+    // Validate that all questions are answered
+    const totalQuestions = streamQuestions.length;
+    const answeredQuestions = Object.keys(streamAnswers).length;
+
+    if (answeredQuestions < totalQuestions) {
+      setError(`Please answer all questions (${answeredQuestions}/${totalQuestions} completed)`);
+      return;
+    }
+
     // FIX: Extract selectedValue from the answer object
     const answerArray = streamQuestions.map(q => {
       const answerData = streamAnswers[q.id];
@@ -333,7 +342,7 @@ export default function QuizPage() {
       const headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const response = await fetch('http://localhost:4000/api/quiz/submit', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/quiz/submit`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ answers: answerArray }),
@@ -342,9 +351,13 @@ export default function QuizPage() {
       if (response.ok) {
         const data = await response.json();
         setStreamResult(data);
-        if (token) await saveQuizResults({ stream: data });
+        // Note: Quiz result is already saved by the backend quiz endpoint
+      } else if (response.status === 401) {
+        setError('Session expired. Please log in again.');
+      } else if (response.status >= 500) {
+        setError('Server error. Please try again later.');
       } else {
-        setError('Failed to submit quiz');
+        setError('Failed to submit quiz. Please check your answers and try again.');
       }
     } catch (err) {
       setError('Network error: ' + err.message);
@@ -355,6 +368,13 @@ export default function QuizPage() {
 
   const handleAptitudeSubmit = async () => {
     const totalQuestions = aptitudeQuestions.length;
+    const answeredQuestions = Object.keys(aptitudeAnswers).length;
+
+    if (answeredQuestions < totalQuestions) {
+      setError(`Please answer all questions (${answeredQuestions}/${totalQuestions} completed)`);
+      return;
+    }
+
     let correctAnswers = 0;
 
     // FIX: Extract selectedValue for comparison
@@ -372,14 +392,20 @@ export default function QuizPage() {
     };
     setAptitudeResult(result);
 
-    const token = mounted ? localStorage.getItem('token') : null;
-    if (token) await saveQuizResults({ aptitude: result });
+    // Note: Individual quiz results are handled separately from the main stream quiz
   };
 
   const handleReasoningSubmit = async () => {
     const totalQuestions = reasoningQuestions.length;
+    const answeredQuestions = Object.keys(reasoningAnswers).length;
+
+    if (answeredQuestions < totalQuestions) {
+      setError(`Please answer all questions (${answeredQuestions}/${totalQuestions} completed)`);
+      return;
+    }
+
     let correctAnswers = 0;
-    
+
     // FIX: Extract selectedValue for comparison
     reasoningQuestions.forEach(question => {
       const answerData = reasoningAnswers[question.id];
@@ -395,27 +421,10 @@ export default function QuizPage() {
     };
     setReasoningResult(result);
 
-    const token = mounted ? localStorage.getItem('token') : null;
-    if (token) await saveQuizResults({ reasoning: result });
+    // Note: Individual quiz results are handled separately from the main stream quiz
   };
 
-  const saveQuizResults = async (results) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const response = await fetch('http://localhost:4000/api/auth/profile', {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ quizResults: results })
-      });
-      if (!response.ok) console.error('Failed to save quiz results');
-    } catch (err) {
-      console.error('Error saving quiz results:', err);
-    }
-  };
+  // Note: Quiz results are automatically saved by the backend quiz submission endpoint
 
   const getCurrentQuestions = () => {
     switch (activeTab) {
