@@ -194,40 +194,57 @@ export default function Home() {
               return (
                 <motion.div
                   key={idx}
-                  whileHover={{ scale: 1.03 }}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{
+                    y: -8,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  }}
                   transition={{ duration: 0.5, delay: idx * 0.08 }}
                   viewport={{ once: true }}
+                  className="group cursor-pointer"
                 >
-                  {/* flip card */}
-                  <div className="relative perspective-1000">
-                    <div className="group relative w-full h-64 [transform-style:preserve-3d] transition-transform duration-700 ease-in-out will-change-transform hover:[transform:rotateY(180deg)]">
-                      {/* front */}
-                      <div className="absolute inset-0 rounded-xl bg-white shadow-lg p-6 flex flex-col items-start justify-between backface-hidden">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 rounded-lg bg-gradient-to-br from-indigo-50 to-pink-50 group-hover:scale-110 transform transition-all">
-                            <Icon size={36} className="text-indigo-600 group-hover:animate-spin-slow" />
-                          </div>
-                          <h3 className="text-xl font-semibold">{f.title}</h3>
-                        </div>
-                        <div className="text-sm text-gray-500">Tap to learn more</div>
+                  <div className="relative bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 h-64 flex flex-col justify-between border border-gray-100 hover:border-indigo-200 overflow-hidden">
+                    {/* Background gradient that appears on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      {/* Icon and title */}
+                      <div className="flex items-center gap-4 mb-4">
+                        <motion.div
+                          className="p-3 rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50 group-hover:from-indigo-100 group-hover:to-purple-100 transition-all duration-300"
+                          whileHover={{
+                            scale: 1.1,
+                            rotate: [0, -10, 10, -10, 0],
+                            transition: { duration: 0.5 }
+                          }}
+                        >
+                          <Icon size={32} className="text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300" />
+                        </motion.div>
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-indigo-900 transition-colors duration-300">{f.title}</h3>
                       </div>
 
-                      {/* back */}
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-600 to-pink-500 text-white p-6 [transform:rotateY(180deg)] backface-hidden flex flex-col justify-between">
-                        <div>
-                          <h4 className="text-lg font-bold mb-2">{f.title}</h4>
-                          <p className="text-sm opacity-90">{f.description}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <Link href={f.link} className="inline-flex items-center gap-2 px-3 py-2 bg-white/10 rounded-md text-sm hover:bg-white/20 transition">
-                            Explore <ArrowRight size={12} />
-                          </Link>
-                          <div className="text-xs opacity-80">Interactive</div>
-                        </div>
-                      </div>
+                      {/* Description */}
+                      <p className="text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed transition-colors duration-300">
+                        {f.description}
+                      </p>
                     </div>
+
+                    {/* Bottom section */}
+                    <div className="relative z-10 flex items-center justify-between">
+                      <Link
+                        href={f.link}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 group-hover:text-indigo-700 transition-colors duration-300 hover:gap-3"
+                      >
+                        Explore
+                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                      </Link>
+                      <div className="w-2 h-2 rounded-full bg-indigo-200 group-hover:bg-indigo-400 transition-colors duration-300" />
+                    </div>
+
+                    {/* Animated border */}
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </div>
                 </motion.div>
               );
@@ -304,17 +321,134 @@ export default function Home() {
               return (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.6, delay: idx * 0.12 }}
+                  initial={{ opacity: 0, y: 50, rotateY: -15 }}
+                  whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+                  whileHover={{
+                    scale: 1.05,
+                    rotateY: 5,
+                    transition: { duration: 0.3 }
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    delay: idx * 0.15,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15
+                  }}
                   viewport={{ once: true }}
+                  className="group perspective-1000"
                 >
-                  <div className="p-6 rounded-2xl bg-white/70 backdrop-blur-md shadow-lg border border-white/30">
-                    <div className="flex items-center justify-center mb-3">
-                      <Icon size={40} className="text-indigo-600" />
+                  <div className="relative p-6 rounded-2xl bg-white/80 backdrop-blur-md shadow-xl border border-white/40 hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                    {/* Animated background particles */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      <motion.div
+                        className="absolute top-2 left-2 w-1 h-1 bg-yellow-400 rounded-full"
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: idx * 0.3
+                        }}
+                      />
+                      <motion.div
+                        className="absolute top-4 right-4 w-1 h-1 bg-pink-400 rounded-full"
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: idx * 0.3 + 0.5
+                        }}
+                      />
+                      <motion.div
+                        className="absolute bottom-3 left-1/3 w-1 h-1 bg-indigo-400 rounded-full"
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: idx * 0.3 + 1
+                        }}
+                      />
                     </div>
-                    <div className="text-3xl font-extrabold text-gray-900 text-center">{counts[idx]}</div>
-                    <div className="text-center text-gray-600 mt-2">{s.label}</div>
+
+                    {/* Icon with bounce animation */}
+                    <div className="flex items-center justify-center mb-4">
+                      <motion.div
+                        className="relative p-3 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 group-hover:from-indigo-600 group-hover:to-purple-700 transition-all duration-300"
+                        whileHover={{
+                          y: [-2, -8, -2],
+                          rotateZ: [0, 5, -5, 0],
+                          transition: {
+                            duration: 0.6,
+                            ease: "easeInOut"
+                          }
+                        }}
+                        animate={{
+                          y: [0, -3, 0],
+                          transition: {
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: idx * 0.4
+                          }
+                        }}
+                      >
+                        <Icon size={36} className="text-white" />
+
+                        {/* Glow effect */}
+                        <motion.div
+                          className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 blur-lg opacity-30"
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.3, 0.6, 0.3]
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: idx * 0.4
+                          }}
+                        />
+                      </motion.div>
+                    </div>
+
+                    {/* Number with typewriter effect */}
+                    <motion.div
+                      className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-center"
+                      initial={{ scale: 0.5 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{
+                        delay: idx * 0.15 + 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 10
+                      }}
+                    >
+                      {counts[idx]}
+                    </motion.div>
+
+                    <motion.div
+                      className="text-center text-gray-600 mt-2 font-medium"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: idx * 0.15 + 0.5 }}
+                    >
+                      {s.label}
+                    </motion.div>
+
+                    {/* Success rays */}
+                    <motion.div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        background: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%)'
+                      }}
+                    />
                   </div>
                 </motion.div>
               );
