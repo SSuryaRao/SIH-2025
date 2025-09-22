@@ -21,7 +21,7 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001',
-      process.env.FRONTEND_URL || 'https://your-app.vercel.app',
+      process.env.FRONTEND_URL || 'https://sih-2025-indol.vercel.app',
       // Add your Vercel URL here
     ];
 
