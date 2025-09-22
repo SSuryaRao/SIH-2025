@@ -12,6 +12,6 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "@next_public_api_url"
+    "NEXT_PUBLIC_API_URL": "https://sih-2025-8w8r.onrender.com"
   }
 }
