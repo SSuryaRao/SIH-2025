@@ -6,11 +6,17 @@ let firebaseConfig;
 
 if (process.env.NODE_ENV === 'production') {
   // Production: Use environment variables
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  // Handle both escaped newlines (\n) and actual newlines
+  if (privateKey && privateKey.includes('\\n')) {
+    privateKey = privateKey.replace(/\\n/g, '\n');
+  }
+
   firebaseConfig = {
     type: "service_account",
     project_id: process.env.FIREBASE_PROJECT_ID,
     private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-    private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    private_key: privateKey,
     client_email: process.env.FIREBASE_CLIENT_EMAIL,
     client_id: process.env.FIREBASE_CLIENT_ID,
     auth_uri: "https://accounts.google.com/o/oauth2/auth",
@@ -25,9 +31,25 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(firebaseConfig),
-  });
+  try {
+    // Validate required fields
+    if (!firebaseConfig.project_id || !firebaseConfig.private_key || !firebaseConfig.client_email) {
+      console.error('Missing required Firebase configuration:', {
+        project_id: !!firebaseConfig.project_id,
+        private_key: !!firebaseConfig.private_key,
+        client_email: !!firebaseConfig.client_email
+      });
+      throw new Error('Missing required Firebase configuration');
+    }
+
+    admin.initializeApp({
+      credential: admin.credential.cert(firebaseConfig),
+    });
+    console.log('Firebase initialized successfully');
+  } catch (error) {
+    console.error('Firebase initialization error:', error.message);
+    throw error;
+  }
 }
 
 const db = admin.firestore();
