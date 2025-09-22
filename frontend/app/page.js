@@ -19,8 +19,22 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-// ✅ Use Lottie directly from URL (student-themed)
-const studentLottie = "https://assets7.lottiefiles.com/packages/lf20_touohxv0.json";
+// 🎓 Education-focused Lottie animations for SIH project - Choose one:
+
+// Option 1: Student with Books & Graduation (Recommended for SIH)
+const educationLottie = "https://assets2.lottiefiles.com/packages/lf20_DMgKk1.json";
+
+// Option 2: Online Learning & Computer (Modern Education)
+// const educationLottie = "https://assets5.lottiefiles.com/packages/lf20_W51pqp.json";
+
+// Option 3: Education Tree with Books (Knowledge Growth)
+// const educationLottie = "https://assets9.lottiefiles.com/packages/lf20_qp1spzqv.json";
+
+// Option 4: Student Achievement & Trophy (Academic Success)
+// const educationLottie = "https://assets1.lottiefiles.com/packages/lf20_q5pk6p1k.json";
+
+// Option 5: Digital Education & Learning (Tech-focused)
+// const educationLottie = "https://assets4.lottiefiles.com/packages/lf20_kkflmtur.json";
 
 // Typing animation component
 function TypingTagline({ phrases = [], speed = 80, pause = 1200 }) {
@@ -109,6 +123,7 @@ const stats = [
 export default function Home() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [lottieData, setLottieData] = useState(null);
 
   const testimonials = [
     { name: 'Ananya', text: 'This platform helped me choose the right stream and get into my dream college!', pic: 'https://randomuser.me/api/portraits/women/65.jpg', rating: 5 },
@@ -120,6 +135,13 @@ export default function Home() {
     const id = setInterval(() => setCurrentTestimonial((v) => (v + 1) % testimonials.length), 6000);
     return () => clearInterval(id);
   }, [testimonials.length]);
+
+  useEffect(() => {
+    fetch(educationLottie)
+      .then(response => response.json())
+      .then(data => setLottieData(data))
+      .catch(error => console.error('Error loading Lottie animation:', error));
+  }, []);
 
   // Individual hook calls for each stat (hooks must be called at top level)
   const count1 = useCountAnimation(stats[0].number, 1000);
@@ -164,7 +186,16 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, x: 40, scale: 0.98 }} whileInView={{ opacity: 1, x: 0, scale: 1 }} transition={{ duration: 0.9 }} viewport={{ once: true }} className="flex items-center justify-center">
               <div className="w-[420px] h-[420px] rounded-3xl bg-white/10 backdrop-blur-md p-6 flex items-center justify-center shadow-2xl">
                 {/* ✅ Lottie from URL */}
-                <Lottie path={studentLottie} loop autoplay style={{ width: '100%', height: '100%' }}/>
+                {lottieData ? (
+                  <Lottie animationData={lottieData} loop={true} autoplay={true} style={{ width: '100%', height: '100%' }}/>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-white/60">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
+                      <p>Loading animation...</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -321,134 +352,224 @@ export default function Home() {
               return (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 50, rotateY: -15 }}
-                  whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   whileHover={{
-                    scale: 1.05,
-                    rotateY: 5,
-                    transition: { duration: 0.3 }
+                    y: -8,
+                    transition: { duration: 0.3, ease: "easeOut" }
                   }}
                   transition={{
-                    duration: 0.8,
+                    duration: 0.7,
                     delay: idx * 0.15,
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15
+                    ease: [0.25, 0.46, 0.45, 0.94]
                   }}
                   viewport={{ once: true }}
-                  className="group perspective-1000"
+                  className="group"
                 >
-                  <div className="relative p-6 rounded-2xl bg-white/80 backdrop-blur-md shadow-xl border border-white/40 hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                    {/* Animated background particles */}
-                    <div className="absolute inset-0 overflow-hidden">
+                  <div className="relative p-6 rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 overflow-hidden">
+                    {/* Diploma/Certificate ribbon */}
+                    <div className="absolute -top-2 -right-2 w-16 h-16">
                       <motion.div
-                        className="absolute top-2 left-2 w-1 h-1 bg-yellow-400 rounded-full"
+                        className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 rounded-full opacity-20"
                         animate={{
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0]
+                          rotate: [0, 360],
+                          scale: [1, 1.1, 1]
                         }}
                         transition={{
-                          duration: 2,
+                          duration: 8,
                           repeat: Infinity,
-                          delay: idx * 0.3
+                          ease: "linear"
                         }}
                       />
                       <motion.div
-                        className="absolute top-4 right-4 w-1 h-1 bg-pink-400 rounded-full"
-                        animate={{
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0]
-                        }}
+                        className="absolute top-2 right-2 text-2xl"
+                        initial={{ scale: 0, rotate: -90 }}
+                        whileInView={{ scale: 1, rotate: 0 }}
                         transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          delay: idx * 0.3 + 0.5
-                        }}
-                      />
-                      <motion.div
-                        className="absolute bottom-3 left-1/3 w-1 h-1 bg-indigo-400 rounded-full"
-                        animate={{
-                          scale: [0, 1, 0],
-                          opacity: [0, 1, 0]
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          delay: idx * 0.3 + 1
-                        }}
-                      />
-                    </div>
-
-                    {/* Icon with bounce animation */}
-                    <div className="flex items-center justify-center mb-4">
-                      <motion.div
-                        className="relative p-3 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 group-hover:from-indigo-600 group-hover:to-purple-700 transition-all duration-300"
-                        whileHover={{
-                          y: [-2, -8, -2],
-                          rotateZ: [0, 5, -5, 0],
-                          transition: {
-                            duration: 0.6,
-                            ease: "easeInOut"
-                          }
-                        }}
-                        animate={{
-                          y: [0, -3, 0],
-                          transition: {
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: idx * 0.4
-                          }
+                          type: "spring",
+                          stiffness: 200,
+                          damping: 10,
+                          delay: idx * 0.15 + 0.8
                         }}
                       >
-                        <Icon size={36} className="text-white" />
-
-                        {/* Glow effect */}
-                        <motion.div
-                          className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 blur-lg opacity-30"
-                          animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.3, 0.6, 0.3]
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: idx * 0.4
-                          }}
-                        />
+                        🏆
                       </motion.div>
                     </div>
 
-                    {/* Number with typewriter effect */}
+                    {/* Student achievement pathway */}
+                    <div className="flex items-center justify-center mb-6">
+                      <motion.div
+                        className="relative"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 12,
+                          delay: idx * 0.15 + 0.3
+                        }}
+                      >
+                        {/* Academic milestone circle */}
+                        <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-4 border-blue-100 group-hover:border-blue-200 transition-all duration-300 flex items-center justify-center">
+                          <Icon size={36} className="text-blue-600 group-hover:text-blue-700 transition-colors duration-300" />
+
+                          {/* Success ripples */}
+                          <motion.div
+                            className="absolute inset-0 rounded-full border-2 border-blue-300"
+                            animate={{
+                              scale: [1, 1.3, 1],
+                              opacity: [0.6, 0, 0.6]
+                            }}
+                            transition={{
+                              duration: 2.5,
+                              repeat: Infinity,
+                              delay: idx * 0.3
+                            }}
+                          />
+                          <motion.div
+                            className="absolute inset-0 rounded-full border border-indigo-400"
+                            animate={{
+                              scale: [1, 1.5, 1],
+                              opacity: [0.4, 0, 0.4]
+                            }}
+                            transition={{
+                              duration: 2.5,
+                              repeat: Infinity,
+                              delay: idx * 0.3 + 0.5
+                            }}
+                          />
+                        </div>
+
+                        {/* Learning path dots */}
+                        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                          {[...Array(3)].map((_, dotIdx) => (
+                            <motion.div
+                              key={dotIdx}
+                              className="w-2 h-2 rounded-full bg-blue-400"
+                              initial={{ scale: 0 }}
+                              whileInView={{ scale: 1 }}
+                              transition={{
+                                delay: idx * 0.15 + 0.5 + dotIdx * 0.1,
+                                type: "spring",
+                                stiffness: 300
+                              }}
+                              animate={{
+                                y: [0, -4, 0],
+                                opacity: [0.5, 1, 0.5],
+                                transition: {
+                                  duration: 1.5,
+                                  repeat: Infinity,
+                                  delay: dotIdx * 0.2
+                                }
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Academic achievement number */}
                     <motion.div
-                      className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-center"
-                      initial={{ scale: 0.5 }}
-                      whileInView={{ scale: 1 }}
+                      className="text-center mb-4"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
                       transition={{
-                        delay: idx * 0.15 + 0.3,
                         type: "spring",
-                        stiffness: 200,
-                        damping: 10
+                        stiffness: 100,
+                        delay: idx * 0.15 + 0.6
                       }}
                     >
-                      {counts[idx]}
+                      <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 mb-1">
+                        {counts[idx]}
+                      </div>
+
+                      {/* Achievement level indicator */}
+                      <motion.div
+                        className="w-16 h-1 mx-auto rounded-full bg-gradient-to-r from-blue-400 to-indigo-500"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: 64 }}
+                        transition={{
+                          duration: 1,
+                          delay: idx * 0.15 + 0.8,
+                          ease: "easeOut"
+                        }}
+                      />
                     </motion.div>
 
+                    {/* Educational milestone label */}
                     <motion.div
-                      className="text-center text-gray-600 mt-2 font-medium"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ delay: idx * 0.15 + 0.5 }}
+                      className="text-center text-gray-700 font-semibold"
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.15 + 0.9 }}
                     >
                       {s.label}
                     </motion.div>
 
-                    {/* Success rays */}
+                    {/* Student progress visualization */}
+                    <div className="mt-6 space-y-2">
+                      {/* Progress books */}
+                      <div className="flex justify-center space-x-2">
+                        {[...Array(4)].map((_, bookIdx) => (
+                          <motion.div
+                            key={bookIdx}
+                            className="relative"
+                            initial={{ y: 20, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            transition={{
+                              delay: idx * 0.15 + 1.2 + bookIdx * 0.1,
+                              duration: 0.5
+                            }}
+                          >
+                            <div className="w-3 h-8 bg-gradient-to-t from-blue-400 to-blue-300 rounded-sm shadow-sm">
+                              <motion.div
+                                className="w-full bg-gradient-to-t from-blue-600 to-blue-500 rounded-sm"
+                                initial={{ height: 0 }}
+                                whileInView={{ height: `${Math.random() * 70 + 30}%` }}
+                                transition={{
+                                  delay: idx * 0.15 + 1.4 + bookIdx * 0.1,
+                                  duration: 0.8,
+                                  ease: "easeOut"
+                                }}
+                              />
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      {/* Excellence indicator */}
+                      <motion.div
+                        className="text-center text-xs text-blue-600 font-medium"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ delay: idx * 0.15 + 1.6 }}
+                      >
+                        Excellence in Education
+                      </motion.div>
+                    </div>
+
+                    {/* Knowledge aura effect */}
                     <motion.div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{
-                        background: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%)'
-                      }}
+                      className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     />
+
+                    {/* Corner academic elements */}
+                    <div className="absolute bottom-4 left-4 opacity-10 text-blue-600">
+                      <motion.div
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                      >
+                        📚
+                      </motion.div>
+                    </div>
+                    <div className="absolute top-4 left-4 opacity-10 text-indigo-600">
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      >
+                        🎓
+                      </motion.div>
+                    </div>
                   </div>
                 </motion.div>
               );
