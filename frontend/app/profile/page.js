@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -27,12 +27,8 @@ export default function ProfilePage() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-    fetchProfile();
-  }, [mounted]);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       // Check for JWT token in localStorage
       const token = localStorage.getItem("token");
@@ -68,7 +64,7 @@ export default function ProfilePage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -117,6 +113,12 @@ export default function ProfilePage() {
     { value: "UG", label: "Undergraduate (UG)" },
     { value: "PG", label: "Postgraduate (PG)" },
   ];
+
+  // useEffect to initialize profile fetching
+  useEffect(() => {
+    if (!mounted) return;
+    fetchProfile();
+  }, [mounted, fetchProfile]);
 
   // Prevent hydration mismatch
   if (!mounted || isLoading) {

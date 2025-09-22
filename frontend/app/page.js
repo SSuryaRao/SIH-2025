@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Lottie from 'lottie-react';
 import {
@@ -118,9 +119,13 @@ export default function Home() {
   useEffect(() => {
     const id = setInterval(() => setCurrentTestimonial((v) => (v + 1) % testimonials.length), 6000);
     return () => clearInterval(id);
-  }, []);
+  }, [testimonials.length]);
 
-  const counts = stats.map((s) => useCountAnimation(s.number, 1000));
+  // Individual hook calls for each stat (hooks must be called at top level)
+  const count1 = useCountAnimation(stats[0].number, 1000);
+  const count2 = useCountAnimation(stats[1].number, 1000);
+  const count3 = useCountAnimation(stats[2].number, 1000);
+  const counts = [count1, count2, count3];
 
   return (
     <div className="min-h-screen font-inter antialiased text-gray-900">
@@ -326,7 +331,7 @@ export default function Home() {
             <div className="md:col-span-2">
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <div className="flex items-center gap-4">
-                  <img src={testimonials[currentTestimonial].pic} alt="profile" className="w-16 h-16 rounded-full object-cover" />
+                  <Image src={testimonials[currentTestimonial].pic} alt="profile" width={64} height={64} className="w-16 h-16 rounded-full object-cover" />
                   <div>
                     <div className="font-semibold">{testimonials[currentTestimonial].name}</div>
                     <div className="text-yellow-500">

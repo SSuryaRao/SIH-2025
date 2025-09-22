@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -53,13 +53,8 @@ export default function DashboardPage() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-    checkAuthentication();
-    fetchProfile();
-  }, [mounted]);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -92,20 +87,10 @@ export default function DashboardPage() {
     } finally {
       setProfileLoading(false);
     }
-  };
+  }, [router]);
 
-  useEffect(() => {
-    if (user?.role === 'admin') {
-      fetchTimelineEvents();
-      fetchCourses();
-      fetchColleges();
-    }
-    if (user) {
-      fetchRecommendations();
-    }
-  }, [user]);
 
-  const checkAuthentication = async () => {
+  const checkAuthentication = useCallback(async () => {
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -134,7 +119,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   const fetchTimelineEvents = async () => {
     try {
@@ -172,7 +157,7 @@ export default function DashboardPage() {
     }
   };
 
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     setRecommendationsLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -205,7 +190,7 @@ export default function DashboardPage() {
     } finally {
       setRecommendationsLoading(false);
     }
-  };
+  }, [router]);
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
@@ -432,6 +417,25 @@ export default function DashboardPage() {
     localStorage.removeItem('token');
     router.push('/login');
   };
+
+  // useEffect to initialize authentication and profile fetching
+  useEffect(() => {
+    if (!mounted) return;
+    checkAuthentication();
+    fetchProfile();
+  }, [mounted, checkAuthentication, fetchProfile]);
+
+  // useEffect to fetch admin data and recommendations
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchTimelineEvents();
+      fetchCourses();
+      fetchColleges();
+    }
+    if (user) {
+      fetchRecommendations();
+    }
+  }, [user, fetchRecommendations]);
 
   // Prevent hydration mismatch
   if (!mounted || isLoading) {

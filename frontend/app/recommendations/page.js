@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -27,12 +27,8 @@ export default function RecommendationsPage() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-    fetchRecommendations();
-  }, [mounted]);
 
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
@@ -72,7 +68,13 @@ export default function RecommendationsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
+
+  // useEffect to initialize recommendations fetching
+  useEffect(() => {
+    if (!mounted) return;
+    fetchRecommendations();
+  }, [mounted, fetchRecommendations]);
 
   // Prevent hydration mismatch
   if (!mounted || isLoading) {

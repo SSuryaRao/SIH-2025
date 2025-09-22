@@ -212,7 +212,7 @@ export default function CoursesPage() {
                 <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
                 <p className="text-gray-600">
-                  No course found for "{searchTerm}". Try another search term.
+                  No course found for &quot;{searchTerm}&quot;. Try another search term.
                 </p>
               </div>
             )}
