@@ -79,7 +79,7 @@ export default function VoiceInterface({
     setAudioLevel(0);
   }, []);
 
-  const setupSpeechRecognition = useCallback(() => {
+  const setupSpeechRecognition = () => {
     const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
     const recognition = new SpeechRecognition();
 
@@ -147,7 +147,7 @@ export default function VoiceInterface({
     };
 
     recognitionRef.current = recognition;
-  }, [onUserSpeech, startAudioVisualization, stopAudioVisualization]);
+  };
 
   const setupSpeechSynthesis = useCallback(() => {
     synthRef.current = window.speechSynthesis;
@@ -156,8 +156,7 @@ export default function VoiceInterface({
   const cleanup = useCallback(() => {
     try {
       if (recognitionRef.current) {
-        recognitionRef.current.abort();
-        recognitionRef.current = null;
+        recognitionRef.current.stop();
       }
       if (synthRef.current) {
         synthRef.current.cancel();
@@ -177,7 +176,7 @@ export default function VoiceInterface({
 
     setIsSupported(speechSupported && synthesisSupported);
 
-    if (speechSupported) {
+    if (speechSupported && !recognitionRef.current) {
       setupSpeechRecognition();
     }
 
@@ -188,7 +187,7 @@ export default function VoiceInterface({
     return () => {
       cleanup();
     };
-  }, [setupSpeechRecognition, setupSpeechSynthesis, cleanup]);
+  }, []);
 
   // Notify parent components of state changes
   useEffect(() => {
@@ -215,28 +214,26 @@ export default function VoiceInterface({
       // Request microphone permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      // Stop any existing recognition first
-      if (recognitionRef.current) {
-        recognitionRef.current.abort();
-      }
-
-      // Small delay to ensure cleanup
-      setTimeout(() => {
-        if (recognitionRef.current && !isListening) {
+      // Start recognition directly
+      recognitionRef.current.start();
+    } catch (error) {
+      console.error('Error starting recognition:', error);
+      if (error.name === 'InvalidStateError') {
+        // Recognition is already running, try to stop and restart
+        recognitionRef.current.stop();
+        setTimeout(() => {
           try {
             recognitionRef.current.start();
-          } catch (error) {
-            console.error('Error starting recognition:', error);
-            // If recognition is already running, ignore the error
-            if (error.name !== 'InvalidStateError') {
-              alert('Unable to start voice recognition. Please try again.');
-            }
+          } catch (retryError) {
+            console.error('Error retrying recognition:', retryError);
+            alert('Unable to start voice recognition. Please refresh the page and try again.');
           }
-        }
-      }, 100);
-    } catch (error) {
-      console.error('Error accessing microphone:', error);
-      alert('Unable to access microphone. Please check permissions.');
+        }, 500);
+      } else if (error.name === 'NotAllowedError') {
+        alert('Unable to access microphone. Please check permissions.');
+      } else {
+        alert('Unable to start voice recognition. Please try again.');
+      }
     }
   };
 
