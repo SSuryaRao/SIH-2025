@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function VoiceInterface({
@@ -22,14 +22,62 @@ export default function VoiceInterface({
   const analyserRef = useRef(null);
   const microphoneRef = useRef(null);
 
-  // Voice settings for different mentors
-  const mentorVoices = {
+  // Voice settings for different mentors - memoized to prevent re-creation
+  const mentorVoices = useMemo(() => ({
     engineer: { rate: 0.9, pitch: 1.1, voiceName: 'Alex' },
     doctor: { rate: 0.85, pitch: 0.9, voiceName: 'Samantha' },
     teacher: { rate: 0.8, pitch: 1.0, voiceName: 'Daniel' },
     artist: { rate: 0.95, pitch: 1.2, voiceName: 'Zira' },
     business: { rate: 0.9, pitch: 0.8, voiceName: 'David' }
-  };
+  }), []);
+
+  const startAudioVisualization = useCallback(async () => {
+    try {
+      if (typeof window === 'undefined') return;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // Check if AudioContext is available
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) {
+        console.log('Web Audio API not supported');
+        return;
+      }
+
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      microphoneRef.current = audioContextRef.current.createMediaStreamSource(stream);
+
+      microphoneRef.current.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const updateAudioLevel = () => {
+        if (analyserRef.current && isListening) {
+          analyserRef.current.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+          setAudioLevel(average / 255);
+          requestAnimationFrame(updateAudioLevel);
+        }
+      };
+
+      updateAudioLevel();
+    } catch (error) {
+      console.error('Error setting up audio visualization:', error);
+      // Gracefully degrade without audio visualization
+      setAudioLevel(0.5); // Set a default level
+    }
+  }, [isListening]);
+
+  const stopAudioVisualization = useCallback(() => {
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    setAudioLevel(0);
+  }, []);
 
   const setupSpeechRecognition = useCallback(() => {
     const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
@@ -69,7 +117,6 @@ export default function VoiceInterface({
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
       setIsListening(false);
       stopAudioVisualization();
 
@@ -78,13 +125,18 @@ export default function VoiceInterface({
           console.log('No speech detected');
           break;
         case 'network':
-          console.log('Network error occurred');
+          console.error('Speech recognition network error:', event.error);
           break;
         case 'not-allowed':
+          console.error('Microphone permission denied:', event.error);
           alert('Microphone permission denied. Please enable microphone access.');
           break;
+        case 'aborted':
+          console.log('Speech recognition was aborted');
+          // Don't show error for aborted - it's expected during cleanup
+          break;
         default:
-          console.log('Speech recognition error:', event.error);
+          console.error('Speech recognition error:', event.error);
       }
     };
 
@@ -95,21 +147,28 @@ export default function VoiceInterface({
     };
 
     recognitionRef.current = recognition;
-  }, [onUserSpeech]);
+  }, [onUserSpeech, startAudioVisualization, stopAudioVisualization]);
 
   const setupSpeechSynthesis = useCallback(() => {
     synthRef.current = window.speechSynthesis;
   }, []);
 
   const cleanup = useCallback(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.abort();
+    try {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+        recognitionRef.current = null;
+      }
+      if (synthRef.current) {
+        synthRef.current.cancel();
+      }
+      stopAudioVisualization();
+      setIsListening(false);
+      setIsSpeaking(false);
+    } catch (error) {
+      console.error('Error during cleanup:', error);
     }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
-    stopAudioVisualization();
-  }, []);
+  }, [stopAudioVisualization]);
 
   useEffect(() => {
     // Check for Web Speech API support
@@ -147,13 +206,34 @@ export default function VoiceInterface({
       return;
     }
 
+    // Prevent multiple instances
+    if (isListening) {
+      return;
+    }
+
     try {
       // Request microphone permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      if (recognitionRef.current && !isListening) {
-        recognitionRef.current.start();
+      // Stop any existing recognition first
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
       }
+
+      // Small delay to ensure cleanup
+      setTimeout(() => {
+        if (recognitionRef.current && !isListening) {
+          try {
+            recognitionRef.current.start();
+          } catch (error) {
+            console.error('Error starting recognition:', error);
+            // If recognition is already running, ignore the error
+            if (error.name !== 'InvalidStateError') {
+              alert('Unable to start voice recognition. Please try again.');
+            }
+          }
+        }
+      }, 100);
     } catch (error) {
       console.error('Error accessing microphone:', error);
       alert('Unable to access microphone. Please check permissions.');
@@ -162,7 +242,14 @@ export default function VoiceInterface({
 
   const stopListening = () => {
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error('Error stopping recognition:', error);
+        // Force cleanup even if stop fails
+        setIsListening(false);
+        stopAudioVisualization();
+      }
     }
   };
 
@@ -230,53 +317,6 @@ export default function VoiceInterface({
     synthRef.current.speak(utterance);
   }, [mentorType, onMentorSpeak, mentorVoices]);
 
-  const startAudioVisualization = async () => {
-    try {
-      if (typeof window === 'undefined') return;
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      // Check if AudioContext is available
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) {
-        console.log('Web Audio API not supported');
-        return;
-      }
-
-      audioContextRef.current = new AudioContext();
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      microphoneRef.current = audioContextRef.current.createMediaStreamSource(stream);
-
-      microphoneRef.current.connect(analyserRef.current);
-      analyserRef.current.fftSize = 256;
-
-      const bufferLength = analyserRef.current.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-
-      const updateAudioLevel = () => {
-        if (analyserRef.current && isListening) {
-          analyserRef.current.getByteFrequencyData(dataArray);
-          const average = dataArray.reduce((a, b) => a + b) / bufferLength;
-          setAudioLevel(average / 255);
-          requestAnimationFrame(updateAudioLevel);
-        }
-      };
-
-      updateAudioLevel();
-    } catch (error) {
-      console.error('Error setting up audio visualization:', error);
-      // Gracefully degrade without audio visualization
-      setAudioLevel(0.5); // Set a default level
-    }
-  };
-
-  const stopAudioVisualization = () => {
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-    setAudioLevel(0);
-  };
 
 
   // Expose speak function to parent

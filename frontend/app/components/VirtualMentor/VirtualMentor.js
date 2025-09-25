@@ -235,54 +235,63 @@ export default function VirtualMentor({
     <div className={`virtual-mentor-container ${className}`}>
       {/* Mentor Selection */}
       {showMentorSelection && availableMentors.length > 0 && (
-        <div className="mentor-selection mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Choose Your Mentor</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {availableMentors.map((mentor) => (
-              <motion.button
-                key={mentor.type}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleMentorChange(mentor.type)}
-                className={`p-3 rounded-xl border-2 transition-all text-center ${
-                  mentorType === mentor.type
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
-              >
-                <div className="text-2xl mb-1">
-                  {mentor.type === 'engineer' && '👨‍💻'}
-                  {mentor.type === 'doctor' && '👩‍⚕️'}
-                  {mentor.type === 'teacher' && '👨‍🏫'}
-                  {mentor.type === 'artist' && '👩‍🎨'}
-                  {mentor.type === 'business' && '👨‍💼'}
-                </div>
-                <div className="text-xs font-medium">{mentor.name}</div>
-                <div className="text-xs text-gray-600">{mentor.title.split(' ')[0]}</div>
-              </motion.button>
-            ))}
+        <div className="mentor-selection mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">Choose Your Mentor</h3>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {availableMentors.map((mentor) => (
+                <motion.button
+                  key={mentor.type}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleMentorChange(mentor.type)}
+                  className={`p-4 rounded-2xl border-2 transition-all text-center shadow-md hover:shadow-lg ${
+                    mentorType === mentor.type
+                      ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 shadow-blue-200'
+                      : 'border-gray-200 bg-gradient-to-br from-white to-gray-50 hover:border-blue-300 hover:shadow-blue-100'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">
+                    {mentor.type === 'engineer' && '👨‍💻'}
+                    {mentor.type === 'doctor' && '👩‍⚕️'}
+                    {mentor.type === 'teacher' && '👨‍🏫'}
+                    {mentor.type === 'artist' && '👩‍🎨'}
+                    {mentor.type === 'business' && '👨‍💼'}
+                  </div>
+                  <div className="text-sm font-bold text-gray-800">{mentor.name}</div>
+                  <div className="text-xs text-gray-500 font-medium mt-1">{mentor.title.split(' ')[0]}</div>
+                  {mentorType === mentor.type && (
+                    <div className="mt-2">
+                      <div className="inline-flex items-center px-2 py-1 rounded-full bg-blue-500 text-white text-xs font-semibold">
+                        ✓ Selected
+                      </div>
+                    </div>
+                  )}
+                </motion.button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* 3D Avatar Section */}
+        {/* Avatar Section */}
         <div className="avatar-section">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             {/* Mentor Info Header */}
             {mentorInfo && (
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-2xl">
+              <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-3xl shadow-lg">
                     {mentorType === 'engineer' && '👨‍💻'}
                     {mentorType === 'doctor' && '👩‍⚕️'}
                     {mentorType === 'teacher' && '👨‍🏫'}
                     {mentorType === 'artist' && '👩‍🎨'}
                     {mentorType === 'business' && '👨‍💼'}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">{mentorInfo.name}</h3>
-                    <p className="text-sm opacity-90">{mentorInfo.title}</p>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-xl">{mentorInfo.name}</h3>
+                    <p className="text-blue-100 font-medium">{mentorInfo.title}</p>
                   </div>
                 </div>
               </div>
@@ -300,7 +309,7 @@ export default function VirtualMentor({
             </ErrorBoundary>
 
             {/* Voice Interface */}
-            <div className="p-4 border-t">
+            <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
               <VoiceInterface
                 onUserSpeech={handleUserSpeech}
                 onMentorSpeak={handleMentorSpeak}
@@ -314,13 +323,16 @@ export default function VirtualMentor({
 
         {/* Conversation Section */}
         <div className="conversation-section">
-          <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
+          <div className="bg-white rounded-2xl shadow-xl h-full flex flex-col border border-gray-100">
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-semibold text-gray-800">Conversation</h3>
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-2xl">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <h3 className="text-lg font-bold text-gray-800">Conversation</h3>
+              </div>
               <button
                 onClick={startNewConversation}
-                className="text-sm text-blue-600 hover:text-blue-700 flex items-center space-x-1"
+                className="text-sm bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-md"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
@@ -332,20 +344,26 @@ export default function VirtualMentor({
             {/* Messages */}
             <div
               ref={conversationRef}
-              className="flex-1 overflow-y-auto p-4 space-y-4"
-              style={{ maxHeight: '400px' }}
+              className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-gray-50/50 to-white custom-scrollbar"
+              style={{ maxHeight: '450px' }}
             >
               {conversation.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-4">🤖</div>
-                  <p className="text-gray-600 mb-4">
-                    Hi! I&apos;m {mentorInfo?.name || 'your mentor'}.
-                    Click the microphone to start our conversation!
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-3xl mb-6 mx-auto shadow-lg">
+                    🤖
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-800 mb-3">
+                    Hi! I&apos;m {mentorInfo?.name || 'your mentor'}
+                  </h4>
+                  <p className="text-gray-600 mb-4 max-w-sm mx-auto">
+                    Ready to guide you through your career journey. Click the microphone to start our conversation!
                   </p>
                   {mentorInfo && (
-                    <p className="text-sm text-gray-500">
-                      Expertise: {mentorInfo.expertise?.join(', ')}
-                    </p>
+                    <div className="inline-flex items-center bg-blue-50 px-4 py-2 rounded-full border border-blue-200">
+                      <span className="text-sm font-medium text-blue-800">
+                        💡 Expertise: {mentorInfo.expertise?.join(', ')}
+                      </span>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -359,18 +377,18 @@ export default function VirtualMentor({
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-xs px-4 py-3 rounded-2xl ${
+                        className={`max-w-sm px-5 py-3 rounded-2xl shadow-md ${
                           message.role === 'user'
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
                             : message.isError
                             ? 'bg-red-50 text-red-800 border border-red-200'
-                            : 'bg-gray-100 text-gray-800'
+                            : 'bg-white text-gray-800 border border-gray-200 shadow-lg'
                         }`}
                       >
-                        <p className="text-sm">{message.content}</p>
+                        <p className="text-sm leading-relaxed">{message.content}</p>
                         {message.mentorName && (
-                          <p className="text-xs opacity-75 mt-1">
-                            - {message.mentorName}
+                          <p className="text-xs opacity-75 mt-2 font-medium">
+                            — {message.mentorName}
                           </p>
                         )}
                       </div>

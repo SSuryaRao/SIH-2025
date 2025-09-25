@@ -176,10 +176,22 @@ export default function Avatar2D({
   const emotionEffects = getEmotionEffects(emotion);
 
   return (
-    <div className={`relative w-full h-96 rounded-xl overflow-hidden ${className}`}>
+    <div className={`relative w-full h-96 rounded-2xl overflow-hidden shadow-2xl ${className}`}>
       {/* Animated Background */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${config.backgroundGradient} opacity-90`}>
-        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+      <div className={`absolute inset-0 bg-gradient-to-br ${config.backgroundGradient}`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10"></div>
+
+        {/* Geometric Background Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+        </div>
 
         {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden">
@@ -236,12 +248,12 @@ export default function Avatar2D({
         {/* Avatar Circle */}
         <motion.div
           ref={avatarRef}
-          className="relative z-20 w-32 h-32 bg-white bg-opacity-95 rounded-full flex items-center justify-center shadow-2xl"
+          className="relative z-20 w-32 h-32 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-full flex items-center justify-center shadow-2xl border-4 border-white border-opacity-30"
           variants={avatarVariants}
           animate={currentAnimation}
           style={{
             filter: emotionEffects.filter,
-            boxShadow: emotionEffects.shadow
+            boxShadow: `${emotionEffects.shadow}, inset 0 0 20px rgba(255,255,255,0.3)`
           }}
         >
           {/* Main Avatar Emoji */}
@@ -305,23 +317,23 @@ export default function Avatar2D({
 
         {/* Name Label */}
         <motion.div
-          className="mt-8 bg-white bg-opacity-20 backdrop-blur-sm px-4 py-2 rounded-full"
+          className="mt-8 bg-white bg-opacity-90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-white/30"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <h3 className="text-white font-semibold text-lg text-center">
+          <h3 className="text-gray-800 font-bold text-lg text-center">
             {config.name}
           </h3>
         </motion.div>
 
         {/* Status Text */}
         <motion.div
-          className="mt-2 text-center"
-          animate={{ opacity: [0.7, 1, 0.7] }}
+          className="mt-3 text-center bg-black bg-opacity-30 backdrop-blur-sm px-4 py-2 rounded-full"
+          animate={{ opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <p className="text-white text-sm">
+          <p className="text-white text-sm font-medium shadow-text">
             {isListening && "👂 I'm listening..."}
             {isSpeaking && "💬 Speaking..."}
             {!isListening && !isSpeaking && "😊 Ready to help!"}
@@ -331,12 +343,12 @@ export default function Avatar2D({
         {/* Emotion Indicator */}
         {emotion !== 'neutral' && (
           <motion.div
-            className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1"
+            className="absolute top-4 right-4 bg-white bg-opacity-95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-white/50"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
           >
-            <span className="text-sm">
+            <span className="text-sm font-medium text-gray-800">
               {emotion === 'happy' && '😊 Happy'}
               {emotion === 'excited' && '🤩 Excited'}
               {emotion === 'concerned' && '😌 Concerned'}
