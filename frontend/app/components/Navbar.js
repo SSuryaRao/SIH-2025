@@ -93,7 +93,7 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-1">
             {navStructure.main.filter(item =>
               isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile', 'alumni'].includes(item.href.slice(1)))
             ).map((item, index) => (

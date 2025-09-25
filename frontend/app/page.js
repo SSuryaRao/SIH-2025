@@ -177,9 +177,9 @@ export default function Home() {
                   <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-yellow-300 to-pink-300 opacity-20 blur-sm" />
                   Join Now
                 </Link>
-                <button onClick={() => setDemoOpen(true)} className="inline-flex items-center gap-3 px-5 py-3 rounded-lg bg-white/10 border border-white/25 text-white hover:shadow-xl transition transform hover:translate-y-[-2px]">
+                {/* <button onClick={() => setDemoOpen(true)} className="inline-flex items-center gap-3 px-5 py-3 rounded-lg bg-white/10 border border-white/25 text-white hover:shadow-xl transition transform hover:translate-y-[-2px]">
                   <span>Watch Demo 🎥</span>
-                </button>
+                </button> */}
               </div>
             </motion.div>
 
@@ -638,12 +638,12 @@ export default function Home() {
               Join Now
             </motion.a>
 
-            <button
+            {/* <button
               onClick={() => setDemoOpen(true)}
               className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20"
             >
               Watch Demo 🎥
-            </button>
+            </button> */}
           </div>
         </div>
       </section>
