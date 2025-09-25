@@ -31,7 +31,7 @@ export default function VirtualMentor({
     checkAuth();
     fetchAvailableMentors();
     fetchMentorInfo(mentorType);
-  }, []);
+  }, [mentorType]);
 
   useEffect(() => {
     fetchMentorInfo(mentorType);
@@ -177,7 +177,7 @@ export default function VirtualMentor({
     const emotionKeywords = {
       stressed: ['stressed', 'overwhelmed', 'confused', 'worried', 'anxious'],
       excited: ['excited', 'amazing', 'love', 'passionate', 'thrilled'],
-      confused: ['confused', 'don\'t understand', 'unclear', 'lost'],
+      confused: ['confused', 'don&apos;t understand', 'unclear', 'lost'],
       sad: ['sad', 'disappointed', 'upset', 'down']
     };
 
@@ -339,7 +339,7 @@ export default function VirtualMentor({
                 <div className="text-center py-8">
                   <div className="text-4xl mb-4">🤖</div>
                   <p className="text-gray-600 mb-4">
-                    Hi! I'm {mentorInfo?.name || 'your mentor'}.
+                    Hi! I&apos;m {mentorInfo?.name || 'your mentor'}.
                     Click the microphone to start our conversation!
                   </p>
                   {mentorInfo && (

@@ -1,6 +1,9 @@
 'use client';
 
 import { useRef, useEffect, useState, Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Box, Sphere, Text, OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
 import Avatar2D from './Avatar2D';
 
 // Fallback to 2D Avatar due to WebGL issues

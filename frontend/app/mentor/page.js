@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import VirtualMentor from '../components/VirtualMentor/VirtualMentor';
 import './mentor.css';
@@ -13,11 +13,7 @@ export default function MentorPage() {
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       setIsAuthenticated(false);
@@ -48,7 +44,11 @@ export default function MentorPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [API_BASE_URL]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const handleMentorChange = (newMentorType) => {
     setCurrentMentor(newMentorType);
@@ -276,7 +276,7 @@ export default function MentorPage() {
             <div>
               <h4 className="font-medium mb-2">💭 Express Feelings</h4>
               <p className="text-sm opacity-90">
-                Don't hesitate to share your emotions - mentors adapt their responses to support you better.
+                Don&apos;t hesitate to share your emotions - mentors adapt their responses to support you better.
               </p>
             </div>
             <div>

@@ -26,7 +26,7 @@ class ErrorBoundary extends Component {
               Mentor Temporarily Unavailable
             </h3>
             <p className="text-gray-600 text-sm mb-4">
-              We're experiencing technical difficulties with the 3D avatar system.
+              We&apos;re experiencing technical difficulties with the 3D avatar system.
               Please try refreshing the page or use our text chat instead.
             </p>
             <button

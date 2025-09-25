@@ -31,36 +31,7 @@ export default function VoiceInterface({
     business: { rate: 0.9, pitch: 0.8, voiceName: 'David' }
   };
 
-  useEffect(() => {
-    // Check for Web Speech API support
-    const speechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-    const synthesisSupported = 'speechSynthesis' in window;
-
-    setIsSupported(speechSupported && synthesisSupported);
-
-    if (speechSupported) {
-      setupSpeechRecognition();
-    }
-
-    if (synthesisSupported) {
-      setupSpeechSynthesis();
-    }
-
-    return () => {
-      cleanup();
-    };
-  }, []);
-
-  // Notify parent components of state changes
-  useEffect(() => {
-    onListeningChange?.(isListening);
-  }, [isListening, onListeningChange]);
-
-  useEffect(() => {
-    onSpeakingChange?.(isSpeaking);
-  }, [isSpeaking, onSpeakingChange]);
-
-  const setupSpeechRecognition = () => {
+  const setupSpeechRecognition = useCallback(() => {
     const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
     const recognition = new SpeechRecognition();
 
@@ -102,7 +73,6 @@ export default function VoiceInterface({
       setIsListening(false);
       stopAudioVisualization();
 
-      // Handle specific errors
       switch(event.error) {
         case 'no-speech':
           console.log('No speech detected');
@@ -125,13 +95,51 @@ export default function VoiceInterface({
     };
 
     recognitionRef.current = recognition;
-  };
+  }, [onUserSpeech]);
 
-  const setupSpeechSynthesis = () => {
-    if ('speechSynthesis' in window) {
-      synthRef.current = window.speechSynthesis;
+  const setupSpeechSynthesis = useCallback(() => {
+    synthRef.current = window.speechSynthesis;
+  }, []);
+
+  const cleanup = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
     }
-  };
+    if (synthRef.current) {
+      synthRef.current.cancel();
+    }
+    stopAudioVisualization();
+  }, []);
+
+  useEffect(() => {
+    // Check for Web Speech API support
+    const speechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    const synthesisSupported = 'speechSynthesis' in window;
+
+    setIsSupported(speechSupported && synthesisSupported);
+
+    if (speechSupported) {
+      setupSpeechRecognition();
+    }
+
+    if (synthesisSupported) {
+      setupSpeechSynthesis();
+    }
+
+    return () => {
+      cleanup();
+    };
+  }, [setupSpeechRecognition, setupSpeechSynthesis, cleanup]);
+
+  // Notify parent components of state changes
+  useEffect(() => {
+    onListeningChange?.(isListening);
+  }, [isListening, onListeningChange]);
+
+  useEffect(() => {
+    onSpeakingChange?.(isSpeaking);
+  }, [isSpeaking, onSpeakingChange]);
+
 
   const startListening = async () => {
     if (!isSupported || !recognitionRef.current) {
@@ -220,7 +228,7 @@ export default function VoiceInterface({
 
     onMentorSpeak?.();
     synthRef.current.speak(utterance);
-  }, [mentorType, onMentorSpeak]);
+  }, [mentorType, onMentorSpeak, mentorVoices]);
 
   const startAudioVisualization = async () => {
     try {
@@ -270,15 +278,6 @@ export default function VoiceInterface({
     setAudioLevel(0);
   };
 
-  const cleanup = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.abort();
-    }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
-    stopAudioVisualization();
-  };
 
   // Expose speak function to parent
   useEffect(() => {
@@ -293,7 +292,7 @@ export default function VoiceInterface({
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
           <p className="text-red-700 mb-2">Voice features not supported</p>
           <p className="text-red-600 text-sm">
-            Your browser doesn't support speech recognition or synthesis.
+            Your browser doesn&apos;t support speech recognition or synthesis.
             Please use Chrome, Edge, or Safari for the best experience.
           </p>
         </div>
@@ -384,7 +383,7 @@ export default function VoiceInterface({
             className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center"
           >
             <p className="text-blue-800 text-sm">
-              <span className="font-medium">You're saying:</span> "{transcript}"
+              <span className="font-medium">You&apos;re saying:</span> &quot;{transcript}&quot;
             </p>
           </motion.div>
         )}
