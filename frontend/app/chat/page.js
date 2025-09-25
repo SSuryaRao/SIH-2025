@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export default function ChatPage() {
+function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -14,34 +14,27 @@ export default function ChatPage() {
   const [userContext, setUserContext] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    checkAuth();
+    setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      checkAuth();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const checkAuth = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
-    setIsAuthenticated(true);
-    fetchUserContext();
-    fetchConversations();
-    fetchSuggestions();
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const fetchUserContext = async () => {
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/context`, {
         headers: {
@@ -60,6 +53,7 @@ export default function ChatPage() {
 
   const fetchConversations = async () => {
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/conversations`, {
         headers: {
@@ -78,6 +72,7 @@ export default function ChatPage() {
 
   const fetchSuggestions = async (category = 'general') => {
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/suggestions`, {
         method: 'POST',
@@ -97,8 +92,27 @@ export default function ChatPage() {
     }
   };
 
+  const checkAuth = () => {
+    if (typeof window === 'undefined' || !isMounted) return; // Skip on server-side
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    setIsAuthenticated(true);
+    fetchUserContext();
+    fetchConversations();
+    fetchSuggestions();
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+
   const loadConversation = async (conversationId) => {
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/history/${conversationId}`, {
         headers: {
@@ -132,6 +146,7 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/message`, {
         method: 'POST',
@@ -187,6 +202,7 @@ export default function ChatPage() {
 
   const deleteConversation = async (conversationId) => {
     try {
+      if (typeof window === 'undefined') return;
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/chat/conversations/${conversationId}`, {
         method: 'DELETE',
@@ -213,7 +229,7 @@ export default function ChatPage() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!isMounted || !isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
@@ -360,8 +376,8 @@ export default function ChatPage() {
                 transition={{ delay: 0.3 }}
                 className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg leading-relaxed"
               >
-                I'm your personal AI career counselor, here to provide tailored guidance based on your unique profile, interests, and aspirations.
-                Whether you need help with course selection, college recommendations, or career planning, I'm here to help you succeed!
+                I&apos;m your personal AI career counselor, here to provide tailored guidance based on your unique profile, interests, and aspirations.
+                Whether you need help with course selection, college recommendations, or career planning, I&apos;m here to help you succeed!
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -587,3 +603,8 @@ export default function ChatPage() {
     </div>
   );
 }
+
+// Force dynamic rendering to prevent SSR issues
+export const dynamic = 'force-dynamic';
+
+export default ChatPage;
