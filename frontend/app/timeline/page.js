@@ -125,7 +125,7 @@ export default function TimelinePage() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            📅 Admission & Scholarship Timeline
+             Admission & Scholarship Timeline
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Stay updated with important dates and deadlines to never miss an opportunity.

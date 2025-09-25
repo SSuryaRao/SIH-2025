@@ -136,14 +136,14 @@ export default function MentorPage() {
                 <p className="opacity-90">
                   {userContext.recommendedMentor.reason}
                 </p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <span className="text-sm bg-white bg-opacity-20 px-2 py-1 rounded">
+                {/* <div className="flex items-center font-semibold space-x-2 mt-2">
+                  <span className="text-sm   px-2 py-1 rounded">
                     {Math.round(userContext.recommendedMentor.matchScore * 100)}% Match
                   </span>
-                  <span className="text-sm opacity-75">
+                  <span className="text-sm opacity-90">
                     Based on your {userContext.recommendedMentor.type} interests
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </motion.div>
