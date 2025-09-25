@@ -66,7 +66,8 @@ export default function Navbar() {
           { href: '/chat', label: '💬 AI Chat', description: 'Text-based AI assistance' },
           { href: '/recommendations', label: '✨ Recommendations', description: 'Personalized suggestions' }
         ]
-      }
+      },
+      { href: '/alumni', label: 'Alumni Stories' }
     ],
     user: [
       { href: '/profile', label: 'Profile' }
@@ -94,7 +95,7 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center space-x-6">
             {navStructure.main.filter(item =>
-              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile'].includes(item.href.slice(1)))
+              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile', 'alumni'].includes(item.href.slice(1)))
             ).map((item, index) => (
               <div key={item.label || item.href} className="relative">
                 {item.dropdown ? (
@@ -281,7 +282,7 @@ export default function Navbar() {
             className="absolute right-4 top-20 bg-indigo-900/95 backdrop-blur-xl text-white shadow-2xl rounded-2xl w-80 py-4 z-50 border border-white/30 ring-2 ring-white/20"
           >
             {navStructure.main.filter(item =>
-              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile'].includes(item.href.slice(1)))
+              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile', 'alumni'].includes(item.href.slice(1)))
             ).map((item, index) => (
               <div key={item.label || item.href}>
                 {item.dropdown ? (
