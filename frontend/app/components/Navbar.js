@@ -40,6 +40,7 @@ export default function Navbar() {
     { href: '/colleges', label: 'Colleges' },
     { href: '/timeline', label: 'Timeline' },
     { href: '/recommendations', label: 'Recommendations' },
+    { href: '/chat', label: ' AI Chat' },
     { href: '/profile', label: 'Profile' }
   ];
 
@@ -61,7 +62,7 @@ export default function Navbar() {
 
           {/* Center Navigation Links - Desktop */}
           <div className="hidden md:flex space-x-8">
-            {navLinks.filter(link => isLoggedIn || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'profile'].includes(link.href.slice(1))).map((link) => (
+            {navLinks.filter(link => isLoggedIn || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'chat', 'profile'].includes(link.href.slice(1))).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -124,7 +125,7 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
             className="absolute right-4 top-16 bg-white text-gray-900 shadow-lg rounded-lg w-48 py-2 z-50"
           >
-            {navLinks.filter(link => isLoggedIn || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'profile'].includes(link.href.slice(1))).map((link) => (
+            {navLinks.filter(link => isLoggedIn || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'chat', 'profile'].includes(link.href.slice(1))).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

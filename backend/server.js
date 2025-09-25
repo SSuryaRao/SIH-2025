@@ -8,6 +8,7 @@ import collegesRoutes from './routes/colleges.js';
 import timelineRoutes from './routes/timeline.js';
 import adminRoutes from './routes/admin.js';
 import recommendationsRoutes from './routes/recommendations.js';
+import chatRoutes from './routes/chat.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -57,6 +58,7 @@ app.use('/api/colleges', collegesRoutes);
 app.use('/api/timeline', timelineRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
