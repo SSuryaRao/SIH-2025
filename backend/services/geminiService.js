@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 class GeminiService {
   constructor() {
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIzaSyDMfHGMoHpSATTdNC9Uj4IlzMsM17ZyUhk');
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   }
 
   async generateResponse(userMessage, userContext, conversationHistory = []) {
