@@ -499,7 +499,7 @@ function ChatPage() {
 
         {/* Input Area */}
         <div className="border-t border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6">
-          <div className="max-w-4xl mx-auto mb-20">
+          <div className="max-w-4xl mx-auto mb-15">
             <div className="bg-white rounded-2xl shadow-lg border-2 border-blue-100 p-2 sm:p-4">
               <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-2 sm:space-y-0 sm:space-x-4">
                 <div className="flex-1 relative w-full">
