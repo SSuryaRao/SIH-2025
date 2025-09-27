@@ -689,7 +689,7 @@ export default function Home() {
               <p className="text-sm text-gray-400 mb-3">Get monthly tips & important dates.</p>
               <form className="flex gap-2">
                 <input className="flex-1 rounded-lg px-3 py-2 text-gray-900" placeholder="Your email" type="email" />
-                <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white">Subscribe</button>
+                {/* <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white">Subscribe</button> */}
               </form>
               <div className="text-xs text-gray-500 mt-3">We respect your privacy.</div>
             </div>
