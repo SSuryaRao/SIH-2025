@@ -98,14 +98,14 @@ export default function Navbar() {
             <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">
               <span className="text-2xl">🎓</span>
             </div>
-            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent hover:from-blue-100 hover:to-white transition-all duration-300">
-              Digital Guidance Platform
+            <Link href="/" className="text-lg md:text-xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent hover:from-blue-100 hover:to-white transition-all duration-300">
+              Digital Guidance
             </Link>
           </motion.div>
 
           <div className="hidden md:flex items-center space-x-1">
             {navStructure.main.filter(item =>
-              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile', 'alumni'].includes(item.href.slice(1)))
+              isLoggedIn || (!item.href || !['/dashboard', '/quiz', '/recommendations', '/mentor', '/chat', '/profile'].some(p => item.href.startsWith(p)))
             ).map((item, index) => (
               <div key={item.label || item.href} className="relative">
                 {item.dropdown ? (
@@ -231,22 +231,7 @@ export default function Navbar() {
                           </div>
                         </div>
                       </Link>
-
-                      {/* <Link
-                        href="/settings"
-                        className="block px-5 py-4 text-white hover:bg-white/25 transition-all duration-300 rounded-xl mx-3 group hover:shadow-lg hover:bg-white/20"
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200">
-                            <Settings className="w-4 h-4 text-white" />
-                          </div>
-                          <div className="flex-1">
-                            <span className="font-bold text-base text-white">Settings</span>
-                            <div className="text-sm text-gray-200">App preferences</div>
-                          </div>
-                        </div>
-                      </Link> */}
-
+                      
                       <div className="border-t border-white/20 my-2 mx-3"></div>
 
                       <button
@@ -306,10 +291,10 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-4 top-20 bg-indigo-900/95 backdrop-blur-xl text-white shadow-2xl rounded-2xl w-80 py-4 z-50 border border-white/30 ring-2 ring-white/20"
+            className="absolute right-4 top-20 bg-indigo-900/95 backdrop-blur-xl text-white shadow-2xl rounded-2xl w-80 py-4 z-50 border border-white/30 ring-2 ring-white/20 max-h-[calc(100vh-6rem)] overflow-y-auto"
           >
             {navStructure.main.filter(item =>
-              isLoggedIn || (!item.href || !['dashboard', 'quiz', 'courses', 'colleges', 'timeline', 'recommendations', 'mentor', 'chat', 'profile', 'alumni'].includes(item.href.slice(1)))
+              isLoggedIn || (!item.href || !['/dashboard', '/quiz', '/recommendations', '/mentor', '/chat', '/profile'].some(p => item.href.startsWith(p)))
             ).map((item, index) => (
               <div key={item.label || item.href}>
                 {item.dropdown ? (
