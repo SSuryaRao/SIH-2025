@@ -48,14 +48,23 @@ export default function Navbar() {
 
   const navStructure = {
     main: [
-      { href: '/dashboard', label: 'Dashboard' },
       {
         label: 'Discover',
         dropdown: [
           { href: '/courses', label: '📚 Courses', description: 'Explore course options' },
           { href: '/colleges', label: '🏫 Colleges', description: 'Find the right college' },
           { href: '/timeline', label: '📅 Timeline', description: 'Important dates & deadlines' },
-          { href: '/scholarships', label: '🎓 Scholarships', description: 'Find funding opportunities' }
+          { href: '/scholarships', label: '🎓 Scholarships', description: 'Find funding opportunities' },
+          { href: '/stakeholders', label: '🤝 Stakeholder Hub', description: 'Connect with education professionals' }
+        ]
+      },
+      {
+        label: 'Resources',
+        dropdown: [
+          { href: '/library', label: '📖 Digital Library', description: 'E-books, study materials, and video lectures' },
+          { href: '/video-lectures', label: '🎬 Video Lectures', description: 'Educational videos from top institutions' },
+          { href: '/study-materials', label: '📄 Study Materials', description: 'Notes, guides, and reference materials' },
+          { href: '/external-links', label: '🔗 External Links', description: 'Curated educational websites and tools' }
         ]
       },
       { href: '/quiz', label: 'Career Quiz' },
@@ -70,6 +79,7 @@ export default function Navbar() {
       { href: '/alumni', label: 'Alumni Stories' }
     ],
     user: [
+      { href: '/dashboard', label: 'Dashboard' },
       { href: '/profile', label: 'Profile' }
     ]
   };
@@ -188,6 +198,23 @@ export default function Navbar() {
                       transition={{ duration: 0.2 }}
                       className="absolute top-full right-0 mt-3 w-56 bg-indigo-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 py-3 z-50 ring-2 ring-white/20"
                     >
+                      <Link
+                        href="/dashboard"
+                        className={`block px-5 py-4 text-white hover:bg-white/25 transition-all duration-300 rounded-xl mx-3 group ${
+                          isActiveLink('/dashboard') ? 'bg-white/30 shadow-lg backdrop-blur-sm border border-white/40 ring-1 ring-white/20 font-bold' : 'hover:shadow-lg hover:bg-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200">
+                            <span className="text-white text-sm">📊</span>
+                          </div>
+                          <div className="flex-1">
+                            <span className={`font-bold text-base ${isActiveLink('/dashboard') ? 'text-white' : 'text-white'}`}>Dashboard</span>
+                            <div className="text-sm text-gray-200">Your personal overview</div>
+                          </div>
+                        </div>
+                      </Link>
+
                       <Link
                         href="/profile"
                         className={`block px-5 py-4 text-white hover:bg-white/25 transition-all duration-300 rounded-xl mx-3 group ${
@@ -322,6 +349,22 @@ export default function Navbar() {
             <div className="border-t border-white/20 mt-4 pt-4">
               {isLoggedIn ? (
                 <>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-4 px-6 py-4 hover:bg-white/25 transition-all duration-300 rounded-xl mx-3 mb-2 group ${
+                      isActiveLink('/dashboard') ? 'bg-white/30 shadow-lg backdrop-blur-sm border border-white/40 ring-1 ring-white/20 font-bold' : 'hover:shadow-lg hover:bg-white/20'
+                    }`}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200">
+                      <span className="text-white text-sm">📊</span>
+                    </div>
+                    <div className="flex-1">
+                      <span className={`font-bold ${isActiveLink('/dashboard') ? 'text-white' : 'text-white'}`}>Dashboard</span>
+                      <div className="text-sm text-gray-200">Your personal overview</div>
+                    </div>
+                  </Link>
+
                   <Link
                     href="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}

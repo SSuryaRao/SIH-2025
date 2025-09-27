@@ -44,6 +44,7 @@ if (!admin.apps.length) {
 
     admin.initializeApp({
       credential: admin.credential.cert(firebaseConfig),
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET || firebaseConfig.project_id + '.appspot.com'
     });
     console.log('Firebase initialized successfully');
   } catch (error) {
@@ -53,4 +54,7 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+const bucket = admin.storage().bucket();
+
+export { db, bucket };
 export default db;

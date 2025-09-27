@@ -10,6 +10,7 @@ import adminRoutes from './routes/admin.js';
 import recommendationsRoutes from './routes/recommendations.js';
 import chatRoutes from './routes/chat.js';
 import mentorRoutes from './routes/mentor.js';
+import stakeholdersRoutes from './routes/stakeholders.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -61,6 +62,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/mentor', mentorRoutes);
+app.use('/api/stakeholders', stakeholdersRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
