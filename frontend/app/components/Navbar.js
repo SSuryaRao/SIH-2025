@@ -366,7 +366,7 @@ export default function Navbar() {
                     </div>
                   </Link>
 
-                  <Link
+                  {/* <Link
                     href="/settings"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center space-x-4 px-6 py-4 hover:bg-white/25 transition-all duration-300 rounded-xl mx-3 mb-2 group hover:shadow-lg hover:bg-white/20"
@@ -378,7 +378,7 @@ export default function Navbar() {
                       <span className="font-bold text-white">Settings</span>
                       <div className="text-sm text-gray-200">App preferences</div>
                     </div>
-                  </Link>
+                  </Link> */}
 
                   <button
                     onClick={handleLogout}
