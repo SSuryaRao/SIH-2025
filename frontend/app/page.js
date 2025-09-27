@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Lottie from 'lottie-react';
+import PWAInstallButton from './components/PWAInstallButton';
 import {
   Target,
   BookOpen,
@@ -700,6 +701,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* PWA Install Button */}
+      <PWAInstallButton />
 
       {/* Styles for flip & backface */}
       <style jsx>{`

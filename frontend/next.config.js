@@ -1,3 +1,34 @@
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true,
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'google-fonts',
+        expiration: {
+          maxEntries: 4,
+          maxAgeSeconds: 365 * 24 * 60 * 60 // 365 days
+        }
+      }
+    },
+    {
+      urlPattern: /^https:\/\/assets\.lottiefiles\.com\/.*/i,
+      handler: 'StaleWhileRevalidate',
+      options: {
+        cacheName: 'lottie-animations',
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+        }
+      }
+    }
+  ]
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -36,4 +67,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);
