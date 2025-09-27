@@ -10,6 +10,7 @@ export default function PWAInstallButton() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
     // Check if app is already installed
@@ -46,22 +47,36 @@ export default function PWAInstallButton() {
   }, []);
 
   const handleInstallClick = async () => {
+    if (isInstalling) return; // Prevent multiple clicks
+
     if (isIOS) {
       setShowIOSInstructions(true);
       return;
     }
 
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      console.log('No deferred prompt available');
+      return;
+    }
+
+    setIsInstalling(true);
 
     try {
+      console.log('Starting PWA installation...');
       const result = await deferredPrompt.prompt();
+      console.log('Install prompt result:', result);
 
       if (result.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
         setDeferredPrompt(null);
         setShowInstallPrompt(false);
+      } else {
+        console.log('User dismissed the install prompt');
       }
     } catch (error) {
       console.error('Error installing PWA:', error);
+    } finally {
+      setIsInstalling(false);
     }
   };
 
@@ -85,6 +100,18 @@ export default function PWAInstallButton() {
     }
   }, []);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('PWA Install Button State:', {
+      isInstalled,
+      showInstallPrompt,
+      isIOS,
+      isInstalling,
+      deferredPrompt: !!deferredPrompt,
+      shouldShow: !isInstalled && (showInstallPrompt || isIOS)
+    });
+  }, [isInstalled, showInstallPrompt, isIOS, isInstalling, deferredPrompt]);
+
   // Don't show if already installed
   if (isInstalled) return null;
 
@@ -92,7 +119,7 @@ export default function PWAInstallButton() {
     <>
       {/* Install Button */}
       <AnimatePresence>
-        {(showInstallPrompt || isIOS) && (
+        {(showInstallPrompt || isIOS || true) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,26 +128,44 @@ export default function PWAInstallButton() {
           >
             <motion.button
               onClick={handleInstallClick}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative group bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3"
+              disabled={isInstalling}
+              whileHover={!isInstalling ? { scale: 1.05 } : {}}
+              whileTap={!isInstalling ? { scale: 0.95 } : {}}
+              className={`relative group bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 ${
+                isInstalling ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
               <div className="relative flex items-center gap-3">
-                <Download size={20} className="group-hover:animate-bounce" />
-                <span className="font-semibold">Install App</span>
+                {isInstalling ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Download size={20} className="group-hover:animate-bounce" />
+                )}
+                <span className="font-semibold">
+                  {isInstalling ? 'Installing...' : 'Install App'}
+                </span>
               </div>
 
               {!isIOS && (
-                <button
+                <div
                   onClick={(e) => {
                     e.stopPropagation();
                     dismissPrompt();
                   }}
-                  className="ml-2 p-1 hover:bg-white/20 rounded-full transition-colors"
+                  className="ml-2 p-1 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      dismissPrompt();
+                    }
+                  }}
                 >
                   <X size={16} />
-                </button>
+                </div>
               )}
             </motion.button>
           </motion.div>
