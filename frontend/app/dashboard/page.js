@@ -464,14 +464,14 @@ export default function DashboardPage() {
         className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-6xl mx-auto px-6 py-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-white"
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">
+            <h1 className="text-3xl md:text-5xl font-bold mb-2">
               Welcome back, {user?.username}! 👋
             </h1>
             <p className="text-blue-100 text-lg md:text-xl font-medium">
@@ -493,7 +493,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="absolute top-6 right-6"
+            className="absolute top-4 right-4"
           >
             <div className={`px-4 py-2 rounded-full font-semibold text-sm ${
               user?.role === 'admin'
@@ -517,7 +517,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto p-6 -mt-4 relative z-10">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 -mt-8 relative z-10">
         {/* Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -525,25 +525,25 @@ export default function DashboardPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8"
         >
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
             {/* Avatar */}
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
               <UserCircle className="w-10 h-10 text-white" />
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1">
+            <div className="flex-1 text-center sm:text-left">
               {profileLoading ? (
                 <div className="animate-pulse">
-                  <div className="h-6 bg-gray-200 rounded w-32 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  <div className="h-6 bg-gray-200 rounded w-32 mb-2 mx-auto sm:mx-0"></div>
+                  <div className="h-4 bg-gray-200 rounded w-24 mx-auto sm:mx-0"></div>
                 </div>
               ) : profile ? (
                 <>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     {profile.username}
                   </h2>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       profile.classLevel === '10' || profile.classLevel === '12'
                         ? 'bg-blue-100 text-blue-800'
@@ -580,7 +580,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8"
+          className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8 mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
@@ -689,7 +689,7 @@ export default function DashboardPage() {
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
                       Aptitude Performance ({Math.round(user.quizResult.aptitudePercentage || 0)}%)
                     </h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {Object.entries(user.quizResult.aptitudeScores).map(([type, score]) => (
                         <motion.div
                           key={type}
@@ -709,7 +709,7 @@ export default function DashboardPage() {
                 {user.quizResult.personalityScores && (
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Personality Traits</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {Object.entries(user.quizResult.personalityScores).map(([trait, score]) => (
                         <motion.div
                           key={trait}
@@ -767,7 +767,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8"
+          className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8 mb-8"
         >
           <div className="flex items-center gap-3 mb-8">
             <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
@@ -784,7 +784,7 @@ export default function DashboardPage() {
             >
               <div className="relative">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-200 mx-auto"></div>
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-600 mx-auto absolute top-0"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-purple-600 mx-auto absolute top-0 left-0 right-0"></div>
               </div>
               <p className="text-gray-600 mt-6 text-lg font-medium">Loading personalized recommendations...</p>
             </motion.div>
@@ -978,7 +978,7 @@ export default function DashboardPage() {
         {/* Admin Panel */}
         {user?.role === 'admin' && (
           <motion.div
-            className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100 p-8 mb-6"
+            className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -993,10 +993,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Tab Navigation - Rounded Pills with Gradients */}
-            <div className="flex gap-3 mb-8 bg-gray-100 p-2 rounded-2xl">
+            <div className="flex flex-wrap gap-3 mb-8 bg-gray-100 p-2 rounded-2xl">
               <motion.button
                 onClick={() => setActiveTab('timeline')}
-                className={`px-6 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
+                className={`px-4 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
                   activeTab === 'timeline'
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transform scale-105'
                     : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
@@ -1009,7 +1009,7 @@ export default function DashboardPage() {
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('courses')}
-                className={`px-6 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
+                className={`px-4 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
                   activeTab === 'courses'
                     ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg transform scale-105'
                     : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
@@ -1022,7 +1022,7 @@ export default function DashboardPage() {
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('colleges')}
-                className={`px-6 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
+                className={`px-4 py-3 font-medium transition-all duration-300 flex items-center gap-2 rounded-xl ${
                   activeTab === 'colleges'
                     ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg transform scale-105'
                     : 'text-gray-600 hover:text-gray-800 hover:bg-white/50'
@@ -1171,10 +1171,10 @@ export default function DashboardPage() {
                             </div>
                           </motion.form>
                         ) : (
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div className="flex-1 mb-4 sm:mb-0">
                               <h4 className="text-lg font-bold text-gray-800 mb-2">{event.title}</h4>
-                              <div className="flex items-center gap-3 text-sm">
+                              <div className="flex flex-wrap items-center gap-3 text-sm">
                                 <span className="flex items-center gap-1 text-gray-600">
                                   <Clock className="w-4 h-4" />
                                   {new Date(event.date).toLocaleDateString()}
@@ -1188,7 +1188,7 @@ export default function DashboardPage() {
                                 </span>
                               </div>
                             </div>
-                            <div className="flex gap-2 ml-4">
+                            <div className="flex gap-2 ml-0 sm:ml-4 flex-shrink-0">
                               <motion.button
                                 onClick={() => setEditingEvent(event)}
                                 className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
@@ -1196,7 +1196,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Edit className="w-4 h-4" />
-                                Edit
+                                <span className="hidden sm:inline">Edit</span>
                               </motion.button>
                               <motion.button
                                 onClick={() => handleDeleteEvent(event.id)}
@@ -1205,7 +1205,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Trash2 className="w-4 h-4" />
-                                Delete
+                                <span className="hidden sm:inline">Delete</span>
                               </motion.button>
                             </div>
                           </div>
@@ -1351,8 +1351,8 @@ export default function DashboardPage() {
                             </div>
                           </motion.form>
                         ) : (
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div className="flex-1 mb-4 sm:mb-0">
                               <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                                 🎓 {course.course}
                               </h4>
@@ -1367,7 +1367,7 @@ export default function DashboardPage() {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex gap-2 ml-4">
+                            <div className="flex gap-2 ml-0 sm:ml-4 flex-shrink-0">
                               <motion.button
                                 onClick={() => setEditingCourse({
                                   ...course,
@@ -1379,7 +1379,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Edit className="w-4 h-4" />
-                                Edit
+                                <span className="hidden sm:inline">Edit</span>
                               </motion.button>
                               <motion.button
                                 onClick={() => handleDeleteCourse(course.id)}
@@ -1388,7 +1388,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Trash2 className="w-4 h-4" />
-                                Delete
+                                <span className="hidden sm:inline">Delete</span>
                               </motion.button>
                             </div>
                           </div>
@@ -1599,8 +1599,8 @@ export default function DashboardPage() {
                             </div>
                           </motion.form>
                         ) : (
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div className="flex-1 mb-4 sm:mb-0">
                               <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                                 🏛️ {college.name}
                               </h4>
@@ -1623,7 +1623,7 @@ export default function DashboardPage() {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex gap-2 ml-4">
+                            <div className="flex gap-2 ml-0 sm:ml-4 flex-shrink-0">
                               <motion.button
                                 onClick={() => setEditingCollege({
                                   ...college,
@@ -1635,7 +1635,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Edit className="w-4 h-4" />
-                                Edit
+                                <span className="hidden sm:inline">Edit</span>
                               </motion.button>
                               <motion.button
                                 onClick={() => handleDeleteCollege(college.id)}
@@ -1644,7 +1644,7 @@ export default function DashboardPage() {
                                 whileTap={{ scale: 0.98 }}
                               >
                                 <Trash2 className="w-4 h-4" />
-                                Delete
+                                <span className="hidden sm:inline">Delete</span>
                               </motion.button>
                             </div>
                           </div>
@@ -1663,7 +1663,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8"
+          className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8 mb-8"
         >
           <div className="flex items-center gap-3 mb-8">
             <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg">
