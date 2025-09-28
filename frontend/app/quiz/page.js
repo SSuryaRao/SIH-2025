@@ -238,7 +238,7 @@ export default function QuizPage() {
           ...data.aptitude,
           ...data.personality,
         ];
-        setStreamQuestions(allQuestions);
+        setStreamQuestions(allQuestions.slice(0, 10));
       } else {
         setError('Failed to fetch questions');
       }
